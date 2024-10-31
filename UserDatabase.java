@@ -2,14 +2,18 @@ import java.io.*;
 import java.util.ArrayList;
 
 public class UserDatabase extends Thread implements Database {
-
+    private String username;
+    private String password;
     private ArrayList<String> userData;
     private ArrayList<String> newUserData;
     private final static Object gateKeeper = new Object();
 
     public UserDatabase() {
+        this.username = username;
+        this.password = password;
         this.userData = new ArrayList<>();
         this.newUserData = new ArrayList<>();
+
     }
 
     @Override
@@ -42,8 +46,17 @@ public class UserDatabase extends Thread implements Database {
         return true;
     }
 
-    public boolean checkUsernameAndPassword() {
-        return true; // Makeshift
+    public boolean checkUsernameAndPassword(String username, String password) {
+        synchronized (gateKeeper) {
+            for (String user : userData) {
+                String[] piece = user.split(",");
+                if (piece[0].equals(username) && piece[1].equals(password)) {
+                    return true;
+                }
+
+            }
+            return false;
+        }
     }
 
     public boolean createNewUser(String username, String password) throws PasswordException,
@@ -60,19 +73,119 @@ public class UserDatabase extends Thread implements Database {
     }
 
     public boolean findUser(String username) {
-        return true; // Makeshift
+        synchronized (gateKeeper) {
+            for (String user : userData) {
+                String[] piece = user.split(",");
+                if (piece[0].equals(username)) {
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 
-    public boolean addFriend(String username) {
-        return true; // Makeshift
+
+    public boolean addFriend(String mainUser, String friendRequest) {
+        synchronized (gateKeeper) {
+            for (int i = 0; i < userData.size(); i++) {
+                String[] piece = userData.get(i).split(",");
+                if (piece[0].equals(mainUser)) {
+                    String friendsData = piece[2].replace("[", "").replace("]", "");
+                    String[] friends;
+                    if (friendsData.equals("")) {
+                        friends = new String[0];
+                    } else {
+                        friends = friendsData.split(";");
+                    }
+                    boolean isFriendPresent = false;
+
+                    for (String friend : friends) {
+                        if (friend.equals(friendRequest)) {
+                            isFriendPresent = true;
+                            break;
+                        }
+                    }
+
+                    if (!isFriendPresent) {
+                        String updatedFriends = friendsData.isEmpty() ? friendRequest : friendsData + ";" + friendRequest;
+                        piece[2] = "[" + updatedFriends + "]";
+                        userData.set(i, String.join(",", piece));
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
     }
 
-    public boolean removeFriend(String username) {
-        return true; // Makeshift
+
+    public boolean removeFriend(String mainUser, String friend) {
+        synchronized (gateKeeper) {
+            for (int i = 0; i < userData.size(); i++) {
+                String[] piece = userData.get(i).split(",");
+                if (piece[0].equals(mainUser)) {
+                    String friendsData = piece[2].replace("[", "").replace("]", "");
+                    String[] friends;
+                    if (friendsData.isEmpty()) {
+                        friends = new String[0];
+                    } else {
+                        friends = friendsData.split(";");
+                    }
+                    StringBuilder updatedFriends = new StringBuilder();
+
+                    for (String friendItem : friends) {
+                        if (!friendItem.equals(friend)) {
+                            if (updatedFriends.length() > 0) {
+                                updatedFriends.append(";");
+                            }
+                            updatedFriends.append(friendItem);
+                        }
+                    }
+
+                    piece[2] = "[" + updatedFriends + "]";
+                    userData.set(i, String.join(",", piece));
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 
-    public boolean block(String username) {
-        return true; // Makeshift
-    }
+    public boolean block(String mainUser, String blockedUser) {
+        synchronized (gateKeeper) {
+            for (int i = 0; i < userData.size(); i++) {
+                String[] piece = userData.get(i).split(",");
+                if (piece[0].equals(mainUser)) {
+                    String blockedData = piece[3].replace("[", "").replace("]", "");
+                    String[] blockedUsers;
+                    if (blockedData.isEmpty()) {
+                        blockedUsers = new String[0];
+                    } else {
+                        blockedUsers = blockedData.split(";");
+                    }
+                    boolean isBlockedPresent = false;
 
+                    for (String blocked : blockedUsers) {
+                        if (blocked.equals(blockedUser)) {
+                            isBlockedPresent = true;
+                            break;
+                        }
+                    }
+
+                    if (!isBlockedPresent) {
+                        String updatedBlocked = blockedData;
+                        if (!blockedData.isEmpty()) {
+                            updatedBlocked += ";";
+                        }
+                        updatedBlocked += blockedUser;
+                        piece[3] = "[" + updatedBlocked + "]";
+                        userData.set(i, String.join(",", piece));
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+    }
 }
+
