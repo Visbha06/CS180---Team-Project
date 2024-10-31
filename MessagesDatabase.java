@@ -14,13 +14,13 @@ public class MessagesDatabase extends Thread implements Database {
     //methods
     @Override
     public boolean readDatabase(String filePath) {
-        try (BufferedReader bfr = new BufferedReader(new FileReader(filePath))){
+        try (BufferedReader bfr = new BufferedReader(new FileReader(filePath))) {
             String line = bfr.readLine();
-            while(line != null){
+            while (line != null) {
                 userData.add(line);
                 line = bfr.readLine();
             }
-        }catch(IOException e){
+        } catch (IOException e) {
             return false;
         }
         return true;
@@ -28,13 +28,13 @@ public class MessagesDatabase extends Thread implements Database {
 
     @Override
     public boolean writeToDatabase(String filePath) {
-        try(BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))){
-            for(int i = 0; i < userData.size(); i++){
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {
+            for (int i = 0; i < userData.size(); i++) {
                 bw.write(userData.get(i));
                 bw.newLine();
             }
             bw.flush();
-        } catch( IOException e){
+        } catch (IOException e) {
             return false;
         }
         return true;
@@ -42,7 +42,7 @@ public class MessagesDatabase extends Thread implements Database {
 
     public boolean findMessages(String username) {
         //stores all the messages by a certain username arrayList
-        ArrayList<String> foundMessages = new ArrayList<String>();
+        ArrayList<String> foundMessages = new ArrayList<>();
 
         //goes through the userData list and finds messages with the username String
         for (int i = 0; i < userData.size(); i++) {
@@ -57,7 +57,7 @@ public class MessagesDatabase extends Thread implements Database {
     public boolean deleteMessage(String username, String message) {
         //goes through userData and removes the message from the txt file
         for (int i = 0; i < userData.size(); i++) {
-            if (userData.get(i).contains(username) && userData.get(i).contains(message)){
+            if (userData.get(i).contains(username) && userData.get(i).contains(message)) {
                 userData.remove(i);
                 return true;
             }
@@ -65,12 +65,12 @@ public class MessagesDatabase extends Thread implements Database {
         return false;
     }
 
-    public boolean messagesAllUsers(String username){
+    public boolean messagesAllUsers(String username) {
         return true; //WIP
 
     }
 
-    public boolean messagesOnlyFriends(String username){
+    public boolean messagesOnlyFriends(String username) {
         return true; //WIP
     }
 

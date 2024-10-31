@@ -1,6 +1,14 @@
 import java.io.*;
 import java.util.ArrayList;
 
+/**
+ * UserDatabase.java
+ * Creates a database for users of the platform
+ *
+ * @author Vishal Bhat, Sathvik Thumma -- Section L25
+ * @version 31 October 2024
+ */
+
 public class UserDatabase extends Thread implements Database {
     private String username;
     private String password;
