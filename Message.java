@@ -7,9 +7,11 @@ public class Message {
         this.user = user;
         this.message = message;
     }
+
     public String toString() {
         return user + ":" + message;
     }
+
     public boolean equals(Object o) {
         if (this == o) return true; // Check if they are the same object
         if (o == null || getClass() != o.getClass()) return false; // Check if o is a Message instance
