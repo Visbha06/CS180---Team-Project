@@ -44,7 +44,7 @@ public class MessagesDatabase extends Thread implements Database {
         //stores all the messages by a certain username arrayList
         ArrayList<String> foundMessages = new ArrayList<String>();
 
-        //goes through the userData list and finds messages with the username String andd
+        //goes through the userData list and finds messages with the username String
         for (int i = 0; i < userData.size(); i++) {
             if (userData.get(i).contains(username)) {
                 foundMessages.add(userData.get(i));
