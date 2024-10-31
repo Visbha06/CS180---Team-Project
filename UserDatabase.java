@@ -18,14 +18,16 @@ public class UserDatabase extends Thread implements Database {
 
     @Override
     public boolean readDatabase(String filepath) {
-        try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
-            String line = br.readLine();
-            while (line != null) {
-                userData.add(line);
-                line = br.readLine();
+        synchronized (gateKeeper) {
+            try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
+                String line = br.readLine();
+                while (line != null) {
+                    userData.add(line);
+                    line = br.readLine();
+                }
+            } catch (IOException e) {
+                return false;
             }
-        } catch (IOException e) {
-            return false;
         }
 
         return true;
@@ -33,15 +35,17 @@ public class UserDatabase extends Thread implements Database {
 
     @Override
     public boolean writeToDatabase(String filepath) {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(filepath))) {
-            for (String newUserDatum : newUserData) {
-                bw.write(newUserDatum);
-                bw.newLine();
-            }
+        synchronized (gateKeeper) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(filepath))) {
+                for (String newUserDatum : newUserData) {
+                    bw.write(newUserDatum);
+                    bw.newLine();
+                }
 
-            bw.flush();
-        } catch (IOException e) {
-            return false;
+                bw.flush();
+            } catch (IOException e) {
+                return false;
+            }
         }
         return true;
     }
@@ -61,6 +65,7 @@ public class UserDatabase extends Thread implements Database {
 
     public boolean createNewUser(String username, String password) throws PasswordException,
             UserAlreadyExistsException {
+        synchronized (gateKeeper) {
         if (password.length() < 7)
             throw new PasswordException("The password should be at least 7 characters long.");
 
@@ -69,6 +74,7 @@ public class UserDatabase extends Thread implements Database {
             throw new UserAlreadyExistsException("This username already exists.");
 
         newUserData.add(newUser.toString());
+        }
         return true;
     }
 

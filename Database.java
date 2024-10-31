@@ -1,5 +1,3 @@
-import java.io.*;
-import java.util.ArrayList;
 public interface Database {
 
     boolean readDatabase(String filepath);
