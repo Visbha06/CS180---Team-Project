@@ -10,15 +10,15 @@ import java.util.ArrayList;
  */
 
 public class UserDatabase extends Thread implements Database {
-    private String username;
-    private String password;
+//    private String username;
+//    private String password;
     private ArrayList<String> userData;
     private ArrayList<String> newUserData;
     private final static Object gateKeeper = new Object();
 
     public UserDatabase() {
-        this.username = username;
-        this.password = password;
+//        this.username = username;
+//        this.password = password;
         this.userData = new ArrayList<>();
         this.newUserData = new ArrayList<>();
 
@@ -200,6 +200,22 @@ public class UserDatabase extends Thread implements Database {
             }
             return false;
         }
+    }
+
+    public ArrayList<String> getUserData() {
+        return userData;
+    }
+
+    public ArrayList<String> getNewUserData() {
+        return newUserData;
+    }
+
+    public void setUserData(ArrayList<String> userData) {
+        this.userData = userData;
+    }
+
+    public void setNewUserData(ArrayList<String> newUserData) {
+        this.newUserData = newUserData;
     }
 }
 
