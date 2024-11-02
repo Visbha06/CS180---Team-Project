@@ -44,7 +44,7 @@ public class UserDatabase extends Thread implements Database {
     @Override
     public boolean writeToDatabase(String filepath) {
         synchronized (gateKeeper) {
-            try (BufferedWriter bw = new BufferedWriter(new FileWriter(filepath))) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(filepath, true))) {
                 for (String newUserDatum : newUserData) {
                     bw.write(newUserDatum);
                     bw.newLine();
