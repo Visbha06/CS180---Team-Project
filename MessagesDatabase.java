@@ -11,12 +11,16 @@ import java.io.*;
 
 public class MessagesDatabase extends Thread implements Database {
     //Fields
-    private ArrayList<String> userData; //messages from users [username]: [message]
+    private ArrayList<String> userData; //messages from users [username]:[message]
+//    private ArrayList<String> newUserData;
     private final static Object gateKeeper = new Object();
 
     //constructor
-    public MessagesDatabase(ArrayList<String> userData) {
-        this.userData = userData;
+    public MessagesDatabase() {
+        if (userData == null) {
+            this.userData = new ArrayList<>();
+        }
+//        this.newUserData = new ArrayList<>();
     }
 
     //methods
@@ -32,6 +36,7 @@ public class MessagesDatabase extends Thread implements Database {
             } catch (IOException e) {
                 return false;
             }
+//            newUserData = new ArrayList<>();
         }
         return true;
     }
@@ -62,7 +67,6 @@ public class MessagesDatabase extends Thread implements Database {
             for (int i = 0; i < userData.size(); i++) {
                 if (userData.get(i).contains(username)) {
                     foundMessages.add(userData.get(i));
-                    return foundMessages;
                 }
             }
             return foundMessages;
@@ -71,24 +75,18 @@ public class MessagesDatabase extends Thread implements Database {
     }
 
     public boolean deleteMessage(String username, String message) {
+        int originalSize = userData.size();
         synchronized (gateKeeper) {
-            int originalSize = userData.size();
             //goes through userData and removes the message from the txt file
             for (int i = 0; i < userData.size(); i++) {
                 if (userData.get(i).contains(username) && userData.get(i).contains(message)) {
                     userData.remove(i);
-                    i++;
+                    break;
                 }
-
             }
-            if (originalSize > userData.size()) {
-                return true; //if any messages were deleted
-            } else {
-                return false; // if no messages were deleted
-            }
-
         }
 
+        return originalSize > userData.size(); //if any messages were deleted
     }
 
     //goes through the arrayList userData and returns
@@ -97,18 +95,20 @@ public class MessagesDatabase extends Thread implements Database {
         synchronized (gateKeeper) {
             ArrayList<String> allUserMessages = new ArrayList<>();
 
-            for (int i = 0; i < userData.size(); i++) {
+            for (int i = 0; i < userData.size();) {
                 if (userData.get(i).contains(username)) {
                     userData.remove(i);
+                } else {
                     i++;
                 }
             }
+
             allUserMessages.addAll(userData); //sets allUserMessages to the modified userData
             return allUserMessages;
         }
     }
 
-
+    // TODO: Needs to access userData from UserDatabase to find friends, not userData from this class
     public ArrayList<String> messagesOnlyFriends(String userName, String[] friends) {
         synchronized (gateKeeper) {
             ArrayList<String> friendsOnly = new ArrayList<>();
@@ -122,5 +122,13 @@ public class MessagesDatabase extends Thread implements Database {
             }
             return friendsOnly;
         }
+    }
+
+    public void addMessage(String username, String message) {
+        userData.add(username + ":" + message);
+    }
+
+    public ArrayList<String> getUserData() {
+        return userData;
     }
 }

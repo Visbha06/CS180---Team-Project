@@ -4,7 +4,6 @@ public class Chat {
    private User userTwo;
 
     public Chat( User userOne, User userTwo) {
-
         this.userOne = userOne;
         this.userTwo = userTwo;
     }
