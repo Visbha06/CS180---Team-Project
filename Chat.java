@@ -1,3 +1,11 @@
+/**
+ * Chat.java
+ * Creates am interface for the chats of the platform
+ *
+ * @author Rylee Holler -- Section L25
+ * @version 02 November 2024
+ */
+
 public class Chat {
 
    private User userOne;

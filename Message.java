@@ -1,3 +1,11 @@
+/**
+ * Message.java
+ * Creates am class for messages of the platform
+ *
+ * @author Rylee Holler -- Section L25
+ * @version 02 November 2024
+ */
+
 public class Message {
 
     private String user;
