@@ -5,6 +5,14 @@ import java.util.ArrayList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+/**
+ * UserDatabaseTest.java
+ * Test cases for the UserDatabase class
+ *
+ * @author Vishal Bhat, Sathvik Thumma -- Section L25
+ * @version 2 November 2024
+ */
+
 public class UserDatabaseTest {
 
     @Test(timeout = 1000)

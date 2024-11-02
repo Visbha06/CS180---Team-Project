@@ -5,6 +5,14 @@ import java.util.ArrayList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+/**
+ * MessagesDatabase.java
+ * Test cases for the MessagesDatabase class
+ *
+ * @author Vishal Bhat -- Section L25
+ * @version 2 November 2024
+ */
+
 public class MessagesDatabaseTest {
 
     MessagesDatabase md = new MessagesDatabase();
