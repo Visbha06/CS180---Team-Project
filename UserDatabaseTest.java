@@ -116,26 +116,59 @@ public class UserDatabaseTest implements UserDatabaseTestInterface {
         assertFalse(result);
     }
 
-    @Override
+    @Test(timeout = 1000)
     public void getUserDataTest() {
-        // TODO
+        UserDatabase db = new UserDatabase();
+        db.readDatabase("testRead.txt"); // Populating userData from testRead.txt
+        ArrayList<String> result = db.getUserData();
+
+        assertEquals(3, result.size());
+        assertEquals("James34,sample_password123,[],[]", result.get(0));
+        assertEquals("Ben500,ilikecats15,[],[]", result.get(1));
+        assertEquals("VB06,csmajor45,[],[]", result.get(2));
     }
 
-    @Override
+    @Test(timeout = 1000)
     public void getNewUserDataTest() {
-        // TODO
+        UserDatabase db = new UserDatabase();
+        db.readDatabase("testCheckUsernameAndPassword.txt"); // Populating newUserData from testCheckUsernameAndPassword.txt
+        ArrayList<String> result = db.getNewUserData();
+
+        assertEquals(3, result.size());
+        assertEquals("James34,sample_password123,[],[]", result.get(0));
+        assertEquals("Ben500,ilikecats15,[],[]", result.get(1));
+        assertEquals("VB06,csmajor45,[],[]", result.get(2));
     }
 
-    @Override
+    @Test(timeout = 1000)
     public void setUserDataTest() {
-        // TODO
+        UserDatabase db = new UserDatabase();
+        ArrayList<String> sampleData = new ArrayList<>();
+        sampleData.add("userA,passwordA,[friendA],[blockedA]");
+        sampleData.add("userB,passwordB,[friendB],[blockedB]");
+
+        db.setUserData(sampleData);  // Using setter to directly set data
+        ArrayList<String> result = db.getUserData();
+
+        assertEquals(2, result.size());
+        assertEquals("userA,passwordA,[friendA],[blockedA]", result.get(0));
+        assertEquals("userB,passwordB,[friendB],[blockedB]", result.get(1));
     }
 
-    @Override
+    @Test(timeout = 1000)
     public void setNewUserDataTest() {
-        // TODO
-    }
+        UserDatabase db = new UserDatabase();
+        ArrayList<String> sampleData = new ArrayList<>();
+        sampleData.add("testUser1,testPass1,[],[]");
+        sampleData.add("testUser2,testPass2,[Friend1],[Blocked1]");
 
+        db.setNewUserData(sampleData); // Using setter to directly set new user data
+        ArrayList<String> result = db.getNewUserData();
+
+        assertEquals(2, result.size());
+        assertEquals("testUser1,testPass1,[],[]", result.get(0));
+        assertEquals("testUser2,testPass2,[Friend1],[Blocked1]", result.get(1));
+    }
 }
 
 
