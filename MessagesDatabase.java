@@ -12,7 +12,7 @@ import java.io.*;
 public class MessagesDatabase extends Thread implements Database {
     //Fields
     private ArrayList<String> userData; //messages from users [username]:[message]
-//    private ArrayList<String> newUserData;
+    //    private ArrayList<String> newUserData;
     private final static Object gateKeeper = new Object();
 
     //constructor
@@ -95,7 +95,7 @@ public class MessagesDatabase extends Thread implements Database {
         synchronized (gateKeeper) {
             ArrayList<String> allUserMessages = new ArrayList<>();
 
-            for (int i = 0; i < userData.size();) {
+            for (int i = 0; i < userData.size(); ) {
                 if (userData.get(i).contains(username)) {
                     userData.remove(i);
                 } else {
@@ -108,10 +108,31 @@ public class MessagesDatabase extends Thread implements Database {
         }
     }
 
-    // TODO: Needs to access userData from UserDatabase to find friends, not userData from this class
-    public ArrayList<String> messagesOnlyFriends(String userName, String[] friends) {
+
+    public ArrayList<String> messagesOnlyFriends(String userName) {
         synchronized (gateKeeper) {
+            //friends only messages
             ArrayList<String> friendsOnly = new ArrayList<>();
+            //creates an array to be instantiated to userData from userDatabase class
+            ArrayList<String> newUserData = new ArrayList<>();
+            //sets new newUser to userDataBase data
+            newUserData = getUserData();
+
+            String newUserName = "";
+            String[] friends = new String[0];
+
+            for (int i = 0; i < newUserData.size(); i++) {
+                String[] splits = newUserData.get(i).split(",");
+                //gets name from userData
+                splits[0] = newUserName;
+                //checks to see if the userNames match
+                if (newUserName.equals(userName)) {
+                    String friendsData = splits[2].replace("[", "").replace("]", "");
+                    friends = friendsData.split(",");
+                }
+
+            }
+
 
             for (int i = 0; i < userData.size(); i++) {
                 for (int j = 0; j < friends.length; j++) {
