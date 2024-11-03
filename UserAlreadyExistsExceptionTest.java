@@ -11,7 +11,7 @@ import static org.junit.Assert.assertTrue;
  * @version 3 November 2024
  */
 
-public class UserAlreadyExistsExceptionTest {
+public class UserAlreadyExistsExceptionTest implements UserAlreadyExistsExceptionTestInterface {
 
     @Test
     public void throwsUserAlreadyExistsException() {

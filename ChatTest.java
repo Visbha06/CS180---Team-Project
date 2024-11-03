@@ -11,7 +11,7 @@ import static org.junit.Assert.assertTrue;
  * @version 3 November 2024
  */
 
-public class ChatTest {
+public class ChatTest implements ChatTestInterface {
 
     @Test(timeout = 1000)
     public void equalsTest() {

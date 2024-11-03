@@ -1,5 +1,3 @@
-import org.junit.*;
-
 import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
@@ -15,7 +13,7 @@ import static org.junit.Assert.assertFalse;
  * @version 2 November 2024
  */
 
-public class UserDatabaseTest {
+public class UserDatabaseTest implements UserDatabaseTestInterface {
 
     @Test(timeout = 1000)
     public void readDatabaseTest() {
@@ -53,6 +51,11 @@ public class UserDatabaseTest {
         assertEquals("newUser3,password3,[],[]", results.get(2));
     }
 
+    @Override
+    public void createNewUserTest() {
+
+    }
+
     @Test(timeout = 1000)
     public void findUserTest() {
         UserDatabase db = new UserDatabase();
@@ -70,6 +73,11 @@ public class UserDatabaseTest {
         assertTrue(db.checkUsernameAndPassword("James34", "sample_password123"));
         assertFalse(db.checkUsernameAndPassword("James34", "wrong_password"));
         assertFalse(db.checkUsernameAndPassword("UnknownUser", "any_password"));
+    }
+
+    @Override
+    public void addFriendTest() {
+        // TODO
     }
 
     @Test(timeout = 1000)
@@ -107,6 +115,27 @@ public class UserDatabaseTest {
         result = db.removeFriend("NonexistentUser", "AnyFriend");
         assertFalse(result);
     }
+
+    @Override
+    public void getUserDataTest() {
+        // TODO
+    }
+
+    @Override
+    public void getNewUserDataTest() {
+        // TODO
+    }
+
+    @Override
+    public void setUserDataTest() {
+        // TODO
+    }
+
+    @Override
+    public void setNewUserDataTest() {
+        // TODO
+    }
+
 }
 
 

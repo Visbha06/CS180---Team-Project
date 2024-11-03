@@ -10,7 +10,7 @@ import static org.junit.Assert.assertEquals;
  * @version 3 November 2024
  */
 
-public class UserTest {
+public class UserTest implements UserTestInterface {
 
     @Test(timeout = 1000)
     public void getUsernameAndPasswordTest() {

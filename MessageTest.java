@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
  * @version 3 November 2024
  */
 
-public class MessageTest {
+public class MessageTest implements MessageTestInterface {
 
     @Test(timeout = 1000)
     public void toStringTest() {

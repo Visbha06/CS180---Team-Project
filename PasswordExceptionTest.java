@@ -11,7 +11,7 @@ import static org.junit.Assert.assertTrue;
  * @version 3 November 2024
  */
 
-public class PasswordExceptionTest {
+public class PasswordExceptionTest implements PasswordExceptionTestInterface {
 
     @Test(timeout = 1000)
     public void throwsPasswordExceptionTest() {

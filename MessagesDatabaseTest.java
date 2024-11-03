@@ -11,7 +11,7 @@ import static org.junit.Assert.assertTrue;
  * @version 2 November 2024
  */
 
-public class MessagesDatabaseTest {
+public class MessagesDatabaseTest implements MessagesDatabaseTestInterface {
 
     MessagesDatabase md = new MessagesDatabase();
 
@@ -83,7 +83,7 @@ public class MessagesDatabaseTest {
     }
 
     @Test(timeout = 1000)
-    public void testMessageAllUsers() {
+    public void messageAllUsersTest() {
         boolean readResult = md.readDatabase("messagesTest.txt");
         var allUserMessages = md.messageAllUsers("John45");
 
@@ -97,6 +97,21 @@ public class MessagesDatabaseTest {
         assertTrue(readResult);
 
         assertEquals(expected, output.toString());
+    }
+
+    @Test(timeout = 1000)
+    public void messageOnlyFriendsTest() {
+        // TODO: Implement
+    }
+
+    @Test(timeout = 1000)
+    public void addMessageTest() {
+        // TODO: Implement
+    }
+
+    @Test(timeout = 1000)
+    public void getUserDataTest() {
+        // TODO: Implement
     }
 
 }
