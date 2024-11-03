@@ -9,7 +9,7 @@ import java.io.*;
  * @version November 31st 2024
  */
 
-public class MessagesDatabase extends Thread implements Database {
+public class MessagesDatabase extends Thread implements MessageDatabaseInterface {
     //Fields
     private ArrayList<String> userData; //messages from users [username]:[message]
     //    private ArrayList<String> newUserData;
@@ -91,7 +91,7 @@ public class MessagesDatabase extends Thread implements Database {
 
     //goes through the arrayList userData and returns
     //a new arrayList that has the messages from all users excluding their own
-    public ArrayList<String> messagesAllUsers(String username) {
+    public ArrayList<String> messageAllUsers(String username) {
         synchronized (gateKeeper) {
             ArrayList<String> allUserMessages = new ArrayList<>();
 
@@ -108,8 +108,9 @@ public class MessagesDatabase extends Thread implements Database {
         }
     }
 
-
-    public ArrayList<String> messagesOnlyFriends(String userName) {
+    // TODO: Uses userData from MessagesDatabase instead of userDatabase, needs correction. Create a userDatabase object
+    // TODO: and instantiate it in the constructor. Use the getUserData method from that class.
+    public ArrayList<String> messageOnlyFriends(String username) {
         synchronized (gateKeeper) {
             //friends only messages
             ArrayList<String> friendsOnly = new ArrayList<>();
@@ -126,7 +127,7 @@ public class MessagesDatabase extends Thread implements Database {
                 //gets name from userData
                 splits[0] = newUserName;
                 //checks to see if the userNames match
-                if (newUserName.equals(userName)) {
+                if (newUserName.equals(username)) {
                     String friendsData = splits[2].replace("[", "").replace("]", "");
                     friends = friendsData.split(",");
                 }

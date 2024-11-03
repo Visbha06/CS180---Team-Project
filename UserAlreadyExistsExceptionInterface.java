@@ -1,2 +1,2 @@
-public class UserAlreadyExistsExceptionInterface {
+public interface UserAlreadyExistsExceptionInterface {
 }

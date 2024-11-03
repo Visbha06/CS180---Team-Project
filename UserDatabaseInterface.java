@@ -11,7 +11,7 @@ public interface UserDatabaseInterface {
     boolean readDatabase(String filepath);
     boolean writeToDatabase(String filePath);
     boolean checkUsernameAndPassword(String username, String password);
-    boolean createNewUser(String username, String password);
+    boolean createNewUser(String username, String password) throws PasswordException, UserAlreadyExistsException;
     boolean findUser(String username);
     boolean addFriend(String mainUser, String friendRequest);
     boolean removeFriend( String mainUser, String friend);

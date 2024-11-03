@@ -1,7 +1,5 @@
 import org.junit.*;
 
-import java.util.ArrayList;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -87,7 +85,7 @@ public class MessagesDatabaseTest {
     @Test(timeout = 1000)
     public void testMessageAllUsers() {
         boolean readResult = md.readDatabase("messagesTest.txt");
-        var allUserMessages = md.messagesAllUsers("John45");
+        var allUserMessages = md.messageAllUsers("John45");
 
         String expected = "Ben500:Been good, hbu?\nBen500:Same here, I have this project to work on.\n";
 

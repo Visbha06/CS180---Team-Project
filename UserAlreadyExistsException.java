@@ -6,7 +6,7 @@
  * @version 30 October 2024
  */
 
-public class UserAlreadyExistsException extends Exception {
+public class UserAlreadyExistsException extends Exception implements UserAlreadyExistsExceptionInterface {
     public UserAlreadyExistsException(String message) {
         super(message);
     }

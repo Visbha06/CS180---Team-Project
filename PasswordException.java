@@ -6,7 +6,7 @@
  * @version 30 October 2024
  */
 
-public class PasswordException extends Exception {
+public class PasswordException extends Exception implements PasswordExceptionInterface {
     public PasswordException(String message) {
         super(message);
     }

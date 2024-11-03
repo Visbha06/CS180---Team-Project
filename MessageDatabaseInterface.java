@@ -1,6 +1,6 @@
 /**
  * MessageDatabaseInterface.java
- * Creates am interface for the Message Database of the platform
+ * Creates an interface for the Message Database of the platform
  *
  * @author Rylee Holler -- Section L25
  * @version 02 November 2024
@@ -12,7 +12,7 @@ public interface MessageDatabaseInterface {
 
     boolean readDatabase(String filePath);
     boolean writeToDatabase(String filePath);
-    boolean findMessages(String username);
+    ArrayList<String> findMessages(String username);
     boolean deleteMessage(String username, String message);
     ArrayList<String> messageAllUsers(String username);
     ArrayList<String> messageOnlyFriends(String username);

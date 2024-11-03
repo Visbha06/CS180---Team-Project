@@ -52,6 +52,7 @@ public class UserDatabaseTest {
         assertEquals("newUser2,password2,[],[]", results.get(1));
         assertEquals("newUser3,password3,[],[]", results.get(2));
     }
+
     @Test(timeout = 1000)
     public void findUserTest() {
         UserDatabase db = new UserDatabase();

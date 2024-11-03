@@ -8,5 +8,7 @@
 
 public interface MessageInterface {
 
+    String toString();
+    boolean equals(Object o);
 
 }

@@ -1,17 +1,17 @@
 /**
  * Chat.java
- * Creates am interface for the chats of the platform
+ * Creates an interface for the chats of the platform
  *
  * @author Rylee Holler -- Section L25
  * @version 02 November 2024
  */
 
-public class Chat implements ChatInterface{
+public class Chat implements ChatInterface {
 
-   private User userOne;
-   private User userTwo;
+    private User userOne;
+    private User userTwo;
 
-    public Chat( User userOne, User userTwo) {
+    public Chat(User userOne, User userTwo) {
         this.userOne = userOne;
         this.userTwo = userTwo;
     }

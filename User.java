@@ -1,4 +1,4 @@
-public class User {
+public class User implements UserInterface {
 
     private String username;
     private String password;
@@ -7,9 +7,9 @@ public class User {
         this.username = username;
         this.password = password;
     }
+
     public String getUsername() { return username; }
     public String getPassword() { return password; }
-
 
     @Override
     public String toString() {

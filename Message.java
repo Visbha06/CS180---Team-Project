@@ -1,6 +1,6 @@
 /**
  * Message.java
- * Creates am class for messages of the platform
+ * Creates a class for messages of the platform
  *
  * @author Rylee Holler -- Section L25
  * @version 02 November 2024

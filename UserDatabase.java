@@ -9,7 +9,7 @@ import java.util.ArrayList;
  * @version 31 October 2024
  */
 
-public class UserDatabase extends Thread implements Database {
+public class UserDatabase extends Thread implements UserDatabaseInterface {
 //    private String username;
 //    private String password;
     private ArrayList<String> userData;
@@ -78,7 +78,15 @@ public class UserDatabase extends Thread implements Database {
             throw new PasswordException("The password should be at least 7 characters long.");
 
         User newUser = new User(username, password);
-        if (userData.contains(newUser.toString()))
+        boolean alreadyExists = false;
+        for (String data : userData) {
+            String[] segments = data.split(",");
+            if (segments[0].equals(username)) {
+                alreadyExists = true;
+                break;
+            }
+        }
+        if (alreadyExists)
             throw new UserAlreadyExistsException("This username already exists.");
 
         newUserData.add(newUser.toString());
@@ -97,7 +105,6 @@ public class UserDatabase extends Thread implements Database {
             return false;
         }
     }
-
 
     public boolean addFriend(String mainUser, String friendRequest) {
         synchronized (gateKeeper) {
