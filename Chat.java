@@ -6,7 +6,7 @@
  * @version 02 November 2024
  */
 
-public class Chat {
+public class Chat implements ChatInterface{
 
    private User userOne;
    private User userTwo;

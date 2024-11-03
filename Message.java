@@ -6,7 +6,7 @@
  * @version 02 November 2024
  */
 
-public class Message {
+public class Message implements MessageInterface {
 
     private String user;
     private String message;
