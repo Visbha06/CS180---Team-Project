@@ -16,5 +16,7 @@ public interface MessageDatabaseInterface {
     boolean deleteMessage(String username, String message);
     ArrayList<String> messageAllUsers(String username);
     ArrayList<String> messageOnlyFriends(String username);
+    ArrayList<String> getUserData();
+//    UserDatabase getUserDatabase();
 
 }
