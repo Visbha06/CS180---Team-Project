@@ -51,9 +51,25 @@ public class UserDatabaseTest implements UserDatabaseTestInterface {
         assertEquals("newUser3,password3,[],[]", results.get(2));
     }
 
-    @Override
+    @Test(timeout = 1000)
     public void createNewUserTest() {
+        UserDatabase db = new UserDatabase();
+        boolean result;
+        try {
+            result = db.createNewUser("VishalB", "abcdefg");
+        } catch (PasswordException | UserAlreadyExistsException e) {
+            result = false;
+        }
 
+        assertTrue(result);
+
+        var newUserData = db.getNewUserData();
+        String[] split = newUserData.getFirst().split(",");
+        User newUser = new User(split[0], split[1]);
+
+        String expected = "VishalB,abcdefg";
+
+        assertEquals(expected, newUser.toString());
     }
 
     @Test(timeout = 1000)
