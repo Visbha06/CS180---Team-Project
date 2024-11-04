@@ -74,13 +74,26 @@ public class UserDatabaseTest implements UserDatabaseTestInterface {
         assertFalse(db.checkUsernameAndPassword("James34", "wrong_password"));
         assertFalse(db.checkUsernameAndPassword("UnknownUser", "any_password"));
     }
-
-    @Override
-    public void addFriendTest() {
-        // TODO
-    }
-
     @Test(timeout = 1000)
+    public void addFriendTest() {
+        UserDatabase db = new UserDatabase();
+        db.readDatabase("testRead.txt");
+
+        boolean result = db.addFriend("James34", "Ben500");
+        assertTrue(result);
+
+        ArrayList<String> results = db.getUserData();
+        assertTrue(results.get(0).contains("[Ben500]"));
+
+        result = db.addFriend("James34", "Ben500");
+        assertFalse(result);
+
+        result = db.addFriend("NonExistentUser", "AnyFriend");
+        assertFalse(result);
+
+}
+
+@Test(timeout = 1000)
     public void blockUserTest() {
         UserDatabase db = new UserDatabase();
         db.readDatabase("testRead.txt");
@@ -162,7 +175,7 @@ public class UserDatabaseTest implements UserDatabaseTestInterface {
         sampleData.add("testUser1,testPass1,[],[]");
         sampleData.add("testUser2,testPass2,[Friend1],[Blocked1]");
 
-        db.setNewUserData(sampleData); // Using setter to directly set new user data
+        db.setNewUserData(sampleData);
         ArrayList<String> result = db.getNewUserData();
 
         assertEquals(2, result.size());
