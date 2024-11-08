@@ -14,11 +14,15 @@ public class MessagesDatabase extends Thread implements MessageDatabaseInterface
     private ArrayList<String> userData; //messages from users [username]:[message]
     //    private ArrayList<String> newUserData;
     private final static Object gateKeeper = new Object();
+    private UserDatabase userDatabase;
 
     //constructor
-    public MessagesDatabase() {
+    public MessagesDatabase(String userDatabaseFilePath) {
         if (userData == null) {
             this.userData = new ArrayList<>();
+            this.userDatabase = new UserDatabase();
+
+            userDatabase.readDatabase(userDatabaseFilePath);
         }
 //        this.newUserData = new ArrayList<>();
     }
@@ -57,7 +61,6 @@ public class MessagesDatabase extends Thread implements MessageDatabaseInterface
         return true;
     }
 
-    // TODO: Change implementation -- should return ArrayList<String> foundMessages
     public ArrayList<String> findMessages(String username) {
         synchronized (gateKeeper) {
             //stores all the messages by a certain username arrayList
@@ -108,40 +111,44 @@ public class MessagesDatabase extends Thread implements MessageDatabaseInterface
         }
     }
 
-    // TODO: Uses userData from MessagesDatabase instead of userDatabase, needs correction. Create a userDatabase object
-    // TODO: and instantiate it in the constructor. Use the getUserData method from that class.
     public ArrayList<String> messageOnlyFriends(String username) {
         synchronized (gateKeeper) {
-            //friends only messages
             ArrayList<String> friendsOnly = new ArrayList<>();
-            //creates an array to be instantiated to userData from userDatabase class
-            ArrayList<String> newUserData = new ArrayList<>();
-            //sets new newUser to userDataBase data
-            newUserData = getUserData();
+            ArrayList<String> newUserData = userDatabase.getUserData();
 
             String newUserName = "";
+            //contains the friends from userDataBase that match with the userName
             String[] friends = new String[0];
 
             for (int i = 0; i < newUserData.size(); i++) {
                 String[] splits = newUserData.get(i).split(",");
                 //gets name from userData
-                splits[0] = newUserName;
+                newUserName = splits[0];
+                String friendsSplitData = splits[2];
                 //checks to see if the userNames match
                 if (newUserName.equals(username)) {
-                    String friendsData = splits[2].replace("[", "").replace("]", "");
-                    friends = friendsData.split(",");
+                    String friendsData = friendsSplitData.replace("[", "").replace("]", "");
+                    if (!friendsData.contains(","))
+                        friends = new String[] { friendsData };
+                    else
+                        friends = friendsData.split(",");
+                    break;
                 }
 
             }
 
-
+            StringBuilder foundFriends = new StringBuilder();
             for (int i = 0; i < userData.size(); i++) {
                 for (int j = 0; j < friends.length; j++) {
-                    if (userData.get(i).contains(friends[j])) {
-                        friendsOnly.add(userData.get(i));
+                    if (userData.get(i).contains(friends[j]) && !foundFriends.toString().contains(friends[j])) {
+                        String friendName = userData.get(i).split(":")[0];
+                        foundFriends.append(friendName).append(",");
+                        friendsOnly.add(friendName);
+                        break;
                     }
                 }
             }
+
             return friendsOnly;
         }
     }
@@ -153,4 +160,9 @@ public class MessagesDatabase extends Thread implements MessageDatabaseInterface
     public ArrayList<String> getUserData() {
         return userData;
     }
+
+//    public UserDatabase getUserDatabase() {
+//        return userDatabase;
+//    }
+
 }

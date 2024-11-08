@@ -1,3 +1,11 @@
+/**
+ * User.java
+ * Creates a user with a username and password
+ *
+ * @author Sathvik Thumma -- Section L25
+ * @version 2 November 2024
+ */
+
 public class User implements UserInterface {
 
     private String username;

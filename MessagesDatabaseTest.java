@@ -11,9 +11,9 @@ import static org.junit.Assert.assertTrue;
  * @version 2 November 2024
  */
 
-public class MessagesDatabaseTest {
+public class MessagesDatabaseTest implements MessagesDatabaseTestInterface {
 
-    MessagesDatabase md = new MessagesDatabase();
+    MessagesDatabase md = new MessagesDatabase("userTest.txt");
 
     @Test(timeout = 1000)
     public void readDatabaseTest() {
@@ -83,7 +83,7 @@ public class MessagesDatabaseTest {
     }
 
     @Test(timeout = 1000)
-    public void testMessageAllUsers() {
+    public void messageAllUsersTest() {
         boolean readResult = md.readDatabase("messagesTest.txt");
         var allUserMessages = md.messageAllUsers("John45");
 
@@ -97,6 +97,54 @@ public class MessagesDatabaseTest {
         assertTrue(readResult);
 
         assertEquals(expected, output.toString());
+    }
+
+    @Test (timeout = 1000)
+    public void messageOnlyFriendsTest() {
+        boolean result = md.readDatabase("messagesTest.txt");
+        var results = md.messageOnlyFriends("John45");
+
+        String expected = "Ben500\n";
+
+        StringBuilder actual = new StringBuilder();
+        for (String name : results) {
+            actual.append(name).append("\n");
+        }
+
+        assertTrue(result);
+        assertEquals(expected, actual.toString());
+    }
+
+    @Test(timeout = 1000)
+    public void addMessageTest() {
+        boolean result = md.readDatabase("messagesTest.txt");
+        md.addMessage("Ben500", "Test message.");
+
+        var data = md.getUserData();
+
+        assertTrue(result);
+        assertEquals("John45:Hey! How's your day been?", data.get(0));
+        assertEquals("Ben500:Been good, hbu?", data.get(1));
+        assertEquals("John45:I've been busy lately.", data.get(2));
+        assertEquals("Ben500:Same here, I have this project to work on.", data.get(3));
+        assertEquals("Ben500:Test message.", data.get(4));
+    }
+
+    @Test(timeout = 1000)
+    public void getUserDataTest() {
+        boolean result = md.readDatabase("messagesTest.txt");
+        var userData = md.getUserData();
+
+        String expected = "John45:Hey! How's your day been?\nBen500:Been good, hbu?\nJohn45:I've been busy lately.\n" +
+                "Ben500:Same here, I have this project to work on.\n";
+
+        StringBuilder actual = new StringBuilder();
+        for (String user : userData) {
+            actual.append(user).append("\n");
+        }
+
+        assertTrue(result);
+        assertEquals(expected, actual.toString());
     }
 
 }

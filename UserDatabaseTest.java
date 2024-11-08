@@ -1,5 +1,3 @@
-import org.junit.*;
-
 import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
@@ -15,7 +13,7 @@ import static org.junit.Assert.assertFalse;
  * @version 2 November 2024
  */
 
-public class UserDatabaseTest {
+public class UserDatabaseTest implements UserDatabaseTestInterface {
 
     @Test(timeout = 1000)
     public void readDatabaseTest() {
@@ -54,6 +52,27 @@ public class UserDatabaseTest {
     }
 
     @Test(timeout = 1000)
+    public void createNewUserTest() {
+        UserDatabase db = new UserDatabase();
+        boolean result;
+        try {
+            result = db.createNewUser("VishalB", "abcdefg");
+        } catch (PasswordException | UserAlreadyExistsException e) {
+            result = false;
+        }
+
+        assertTrue(result);
+
+        var newUserData = db.getNewUserData();
+        String[] split = newUserData.getFirst().split(",");
+        User newUser = new User(split[0], split[1]);
+
+        String expected = "VishalB,abcdefg";
+
+        assertEquals(expected, newUser.toString());
+    }
+
+    @Test(timeout = 1000)
     public void findUserTest() {
         UserDatabase db = new UserDatabase();
         db.readDatabase("testRead.txt");
@@ -71,8 +90,26 @@ public class UserDatabaseTest {
         assertFalse(db.checkUsernameAndPassword("James34", "wrong_password"));
         assertFalse(db.checkUsernameAndPassword("UnknownUser", "any_password"));
     }
-
     @Test(timeout = 1000)
+    public void addFriendTest() {
+        UserDatabase db = new UserDatabase();
+        db.readDatabase("testRead.txt");
+
+        boolean result = db.addFriend("James34", "Ben500");
+        assertTrue(result);
+
+        ArrayList<String> results = db.getUserData();
+        assertTrue(results.get(0).contains("[Ben500]"));
+
+        result = db.addFriend("James34", "Ben500");
+        assertFalse(result);
+
+        result = db.addFriend("NonExistentUser", "AnyFriend");
+        assertFalse(result);
+
+}
+
+@Test(timeout = 1000)
     public void blockUserTest() {
         UserDatabase db = new UserDatabase();
         db.readDatabase("testRead.txt");
@@ -106,6 +143,60 @@ public class UserDatabaseTest {
 
         result = db.removeFriend("NonexistentUser", "AnyFriend");
         assertFalse(result);
+    }
+
+    @Test(timeout = 1000)
+    public void getUserDataTest() {
+        UserDatabase db = new UserDatabase();
+        db.readDatabase("testRead.txt"); // Populating userData from testRead.txt
+        ArrayList<String> result = db.getUserData();
+
+        assertEquals(3, result.size());
+        assertEquals("James34,sample_password123,[],[]", result.get(0));
+        assertEquals("Ben500,ilikecats15,[],[]", result.get(1));
+        assertEquals("VB06,csmajor45,[],[]", result.get(2));
+    }
+
+    @Test(timeout = 1000)
+    public void getNewUserDataTest() {
+        UserDatabase db = new UserDatabase();
+        db.readDatabase("testCheckUsernameAndPassword.txt"); // Populating newUserData from testCheckUsernameAndPassword.txt
+        ArrayList<String> result = db.getNewUserData();
+
+        assertEquals(3, result.size());
+        assertEquals("James34,sample_password123,[],[]", result.get(0));
+        assertEquals("Ben500,ilikecats15,[],[]", result.get(1));
+        assertEquals("VB06,csmajor45,[],[]", result.get(2));
+    }
+
+    @Test(timeout = 1000)
+    public void setUserDataTest() {
+        UserDatabase db = new UserDatabase();
+        ArrayList<String> sampleData = new ArrayList<>();
+        sampleData.add("userA,passwordA,[friendA],[blockedA]");
+        sampleData.add("userB,passwordB,[friendB],[blockedB]");
+
+        db.setUserData(sampleData);  // Using setter to directly set data
+        ArrayList<String> result = db.getUserData();
+
+        assertEquals(2, result.size());
+        assertEquals("userA,passwordA,[friendA],[blockedA]", result.get(0));
+        assertEquals("userB,passwordB,[friendB],[blockedB]", result.get(1));
+    }
+
+    @Test(timeout = 1000)
+    public void setNewUserDataTest() {
+        UserDatabase db = new UserDatabase();
+        ArrayList<String> sampleData = new ArrayList<>();
+        sampleData.add("testUser1,testPass1,[],[]");
+        sampleData.add("testUser2,testPass2,[Friend1],[Blocked1]");
+
+        db.setNewUserData(sampleData);
+        ArrayList<String> result = db.getNewUserData();
+
+        assertEquals(2, result.size());
+        assertEquals("testUser1,testPass1,[],[]", result.get(0));
+        assertEquals("testUser2,testPass2,[Friend1],[Blocked1]", result.get(1));
     }
 }
 
