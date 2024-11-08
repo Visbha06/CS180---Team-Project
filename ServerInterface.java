@@ -1,3 +1,11 @@
+/**
+ * ServerInterface.java
+ * Creates am interface for the server of the platform
+ *
+ * @author Rylee Holler -- Section L25
+ * @version 08 November 2024
+ */
+
 import java.util.ArrayList;
 
 public interface ServerInterface {
