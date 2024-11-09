@@ -1,21 +1,21 @@
+import java.util.ArrayList;
+
 /**
  * ServerInterface.java
- * Creates am interface for the server of the platform
+ * Creates an interface for the server of the platform
  *
  * @author Rylee Holler -- Section L25
  * @version 08 November 2024
  */
 
-import java.util.ArrayList;
-
 public interface ServerInterface {
 
     int PORT = 1234;
 
-    public void run();
+    void run();
 
-    public ArrayList<String> loadUserData(String filepath);
+    ArrayList<String> loadUserData(String filepath);
 
-    public ArrayList<String> loadMessages(String filepath);
+    ArrayList<String> loadMessages(String filepath);
 
 }
