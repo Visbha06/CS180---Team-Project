@@ -12,7 +12,7 @@ public interface ServerInterface {
 
     int PORT = 1234;
 
-    void run();
+    void start();
 
     ArrayList<String> loadUserData(String filepath);
 
