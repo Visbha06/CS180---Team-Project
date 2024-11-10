@@ -1,0 +1,5 @@
+public enum Action {
+
+    SEND_MESSAGE, DELETE_MESSAGE, ALL_USERS, FRIENDS_ONLY
+
+}
