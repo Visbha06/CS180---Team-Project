@@ -40,37 +40,29 @@ public class Server implements ServerInterface {
 
     @Override
     public ArrayList<String> loadMessages(String filepath) {
-        try{
-            BufferedReader bfr = new BufferedReader(new FileReader(filepath));
-            String line = bfr.readLine();
-            while(line != null){
-                messageData.add(line);
-                line = bfr.readLine();
-            }
-
-        }catch(IOException e){
+        boolean messagesLoaded = false;
+        if(messagesDatabase.readDatabase(filepath)){
+            messagesLoaded = true;
+        }
+        if(messagesLoaded){
+            return messagesDatabase.getUserData();
+        }else{
             return null;
         }
-        return messagesDatabase.getUserData();
-
     }
 
     // TODO
     @Override
     public ArrayList<String> loadUserData(String filepath) {
-        try{
-            BufferedReader bfr = new BufferedReader(new FileReader(filepath));
-            String line = bfr.readLine();
-            while(line != null){
-                userData.add(line);
-                line = bfr.readLine();
-            }
-
-        }catch(IOException e){
+        boolean userDataLoaded = false;
+        if(userDatabase.readDatabase(filepath)){
+            userDataLoaded = true;
+        }
+        if(userDataLoaded){
+            return userDatabase.getUserData();
+        }else{
             return null;
         }
-        return userDatabase.getUserData();
-
     }
 
     private static class ClientHandler implements Runnable {
