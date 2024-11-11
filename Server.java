@@ -40,11 +40,8 @@ public class Server implements ServerInterface {
 
     @Override
     public ArrayList<String> loadMessages(String filepath) {
-        boolean messagesLoaded = false;
-        if(messagesDatabase.readDatabase(filepath)){
-            messagesLoaded = true;
-        }
-        if(messagesLoaded){
+        boolean messageDataLoaded = messagesDatabase.readDatabase(filepath);
+        if(messageDataLoaded){
             return messagesDatabase.getUserData();
         }else{
             return null;
@@ -54,15 +51,12 @@ public class Server implements ServerInterface {
     // TODO
     @Override
     public ArrayList<String> loadUserData(String filepath) {
-        boolean userDataLoaded = false;
-        if(userDatabase.readDatabase(filepath)){
-            userDataLoaded = true;
-        }
-        if(userDataLoaded){
-            return userDatabase.getUserData();
-        }else{
-            return null;
-        }
+        boolean userDataLoaded = userDatabase.readDatabase(filepath);
+       if(userDataLoaded){
+           return userDatabase.getUserData();
+       }else{
+           return null;
+       }
     }
 
     private static class ClientHandler implements Runnable {
