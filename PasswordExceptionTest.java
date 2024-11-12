@@ -15,7 +15,7 @@ public class PasswordExceptionTest implements PasswordExceptionTestInterface {
 
     @Test(timeout = 1000)
     public void throwsPasswordExceptionTest() {
-        UserDatabase ud = new UserDatabase();
+        UserDatabase ud = new UserDatabase("testRead.txt");
 
         Exception e = assertThrows(PasswordException.class, () -> {
             ud.createNewUser("SampleUser", "bob");

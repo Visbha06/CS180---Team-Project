@@ -10,8 +10,8 @@ import java.util.ArrayList;
 
 public interface MessageDatabaseInterface {
 
-    boolean readDatabase(String filePath);
-    boolean writeToDatabase(String filePath);
+    boolean readDatabase();
+    boolean writeToDatabase();
     ArrayList<String> findMessages(String username);
     boolean deleteMessage(String username, String message);
     ArrayList<String> messageAllUsers(String username);

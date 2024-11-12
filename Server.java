@@ -4,25 +4,20 @@ import java.util.ArrayList;
 
 public class Server implements ServerInterface {
 
-    private UserDatabase userDatabase;
-    private MessagesDatabase messagesDatabase;
-    private ArrayList<String> userData;
-    private ArrayList<String> messageData;
-    private String userFilepath;
-    private String messagesFilepath;
+    private static UserDatabase userDatabase;
+    private static MessagesDatabase messagesDatabase;
+    private static ArrayList<String> userData;
+    private static ArrayList<String> messageData;
 
-    public Server(UserDatabase userDatabase, MessagesDatabase messagesDatabase, String userFilepath,
-                  String messagesFilepath) {
-        this.userDatabase = userDatabase;
-        this.messagesDatabase = messagesDatabase;
-        this.userFilepath = userFilepath;
-        this.messagesFilepath = messagesFilepath;
+    public Server(UserDatabase userDatabase, MessagesDatabase messagesDatabase) {
+        Server.userDatabase = userDatabase;
+        Server.messagesDatabase = messagesDatabase;
     }
 
     @Override
     public void start() {
-        userData = loadUserData(userFilepath);
-        messageData = loadMessages(messagesFilepath);
+        userData = loadUserData();
+        messageData = loadMessages();
 
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             System.out.println("Server is running on port: " + PORT);
@@ -37,26 +32,24 @@ public class Server implements ServerInterface {
         }
     }
 
-
     @Override
-    public ArrayList<String> loadMessages(String filepath) {
-        boolean messageDataLoaded = messagesDatabase.readDatabase(filepath);
-        if(messageDataLoaded){
+    public ArrayList<String> loadMessages() {
+        boolean messageDataLoaded = messagesDatabase.readDatabase();
+        if (messageDataLoaded) {
             return messagesDatabase.getUserData();
-        }else{
+        } else {
             return null;
         }
     }
 
-    // TODO
     @Override
-    public ArrayList<String> loadUserData(String filepath) {
-        boolean userDataLoaded = userDatabase.readDatabase(filepath);
-       if(userDataLoaded){
-           return userDatabase.getUserData();
-       }else{
-           return null;
-       }
+    public ArrayList<String> loadUserData() {
+        boolean userDataLoaded = userDatabase.readDatabase();
+        if (userDataLoaded) {
+            return userDatabase.getUserData();
+        } else {
+            return null;
+        }
     }
 
     private static class ClientHandler implements Runnable {
@@ -68,13 +61,129 @@ public class Server implements ServerInterface {
 
         @Override
         public void run() {
+            try (
+                    BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                    PrintWriter out = new PrintWriter(clientSocket.getOutputStream())
+            ) {
+                String inputLine = in.readLine();
+                while (inputLine != null) {
+                    int index = Integer.parseInt(inputLine.split(":", 4)[0]);
+                    String usernameOne = inputLine.split(":", 4)[1];
+                    String usernameTwo = inputLine.split(":", 4)[2];
+                    String message = inputLine.split(":", 4)[3];
 
+                    Action action = Action.fromInt(index);
+
+                    switch (action) {
+                        case SEND_MESSAGE:
+                            Server.messagesDatabase.addMessage(usernameOne, usernameTwo, message);
+                            break;
+                        case FIND_MESSAGE:
+                            ArrayList<String> resultMessages = Server.messagesDatabase.findMessages(usernameOne);
+                            String[] resultMessagesArr = resultMessages.toArray(new String[0]);
+                            String joinedDataMessages = String.join(",", resultMessagesArr);
+                            out.write(joinedDataMessages);
+                            out.println();
+                            out.flush();
+                            break;
+                        case DELETE_MESSAGE:
+                            boolean resultDelete = Server.messagesDatabase.deleteMessage(usernameOne, message);
+                            if (resultDelete) {
+                                out.write("Message deleted");
+                                out.println();
+                                out.flush();
+                            }
+                            break;
+                        case ALL_USERS:
+                            ArrayList<String> resultAllUsers = Server.messagesDatabase.messageAllUsers(usernameOne);
+                            String[] resultAllUsersArr = resultAllUsers.toArray(new String[0]);
+                            String joinedDataAllUsers = String.join(",", resultAllUsersArr);
+                            out.write(joinedDataAllUsers);
+                            out.println();
+                            out.flush();
+                            break;
+                        case FRIENDS_ONLY:
+                            ArrayList<String> resultFriends = Server.messagesDatabase.messageOnlyFriends(usernameOne);
+                            String[] resultFriendsArr = resultFriends.toArray(new String[0]);
+                            String joinedDataFriends = String.join(",", resultFriendsArr);
+                            out.write(joinedDataFriends);
+                            out.println();
+                            out.flush();
+                            break;
+                        case CREATE_USER:
+                            boolean resultNewUser;
+                            try {
+                                resultNewUser = Server.userDatabase.createNewUser(usernameOne, message);
+                                if (resultNewUser) {
+                                    out.write("User created");
+                                    out.println();
+                                    out.flush();
+                                }
+                            } catch (PasswordException | UserAlreadyExistsException e) {
+                                out.write(e.getMessage());
+                                out.println();
+                                out.flush();
+                            }
+                            break;
+                        case FIND_USER:
+
+                            break;
+                        case ADD_FRIEND:
+                            boolean resultAddFriend = Server.userDatabase.addFriend(usernameOne, usernameTwo);
+                            if (resultAddFriend) {
+                                out.write(usernameTwo + " added!");
+                                out.println();
+                                out.flush();
+                            }
+                            Server.userDatabase.readDatabase();
+                            break;
+                        case REMOVE_FRIEND:
+                            boolean resultRemoveFriend = Server.userDatabase.removeFriend(usernameOne, usernameTwo);
+                            if (resultRemoveFriend) {
+                                out.write(usernameTwo + " removed!");
+                                out.println();
+                                out.flush();
+                            }
+                            Server.userDatabase.readDatabase();
+                            break;
+                        case BLOCK:
+                            boolean resultBlock = Server.userDatabase.block(usernameOne, usernameTwo);
+                            if (resultBlock) {
+                                out.write(usernameTwo + " blocked!");
+                                out.println();
+                                out.flush();
+                            }
+                            Server.userDatabase.readDatabase();
+                            break;
+                    }
+
+                    inputLine = in.readLine();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } finally {
+                try {
+                    clientSocket.close();
+                    System.out.println("Client disconnected");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 
     public static void main(String[] args) {
-        Server server = new Server(null, null, "userDatabase.txt",
-                "messagesDatabase.txt");
+        Server server = new Server(null, null);
         server.start();
     }
+
+    public UserDatabase getUserDatabase() {
+        return userDatabase;
+    }
+
+    public MessagesDatabase getMessagesDatabase() {
+        return messagesDatabase;
+    }
+
+
 }

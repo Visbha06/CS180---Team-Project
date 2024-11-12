@@ -10,24 +10,26 @@ import java.util.ArrayList;
  */
 
 public class UserDatabase extends Thread implements UserDatabaseInterface {
-//    private String username;
+    //    private String username;
 //    private String password;
     private ArrayList<String> userData;
     private ArrayList<String> newUserData;
     private final static Object gateKeeper = new Object();
+    private String filePath;
 
-    public UserDatabase() {
+    public UserDatabase(String filePath) {
 //        this.username = username;
 //        this.password = password;
         this.userData = new ArrayList<>();
         this.newUserData = new ArrayList<>();
+        this.filePath = filePath;
 
     }
 
     @Override
-    public boolean readDatabase(String filepath) {
+    public boolean readDatabase() {
         synchronized (gateKeeper) {
-            try (BufferedReader br = new BufferedReader(new FileReader(filepath))) {
+            try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
                 String line = br.readLine();
                 while (line != null) {
                     userData.add(line);
@@ -42,9 +44,9 @@ public class UserDatabase extends Thread implements UserDatabaseInterface {
     }
 
     @Override
-    public boolean writeToDatabase(String filepath) {
+    public boolean writeToDatabase() {
         synchronized (gateKeeper) {
-            try (BufferedWriter bw = new BufferedWriter(new FileWriter(filepath, true))) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath, true))) {
                 for (String newUserDatum : newUserData) {
                     bw.write(newUserDatum);
                     bw.newLine();
@@ -74,22 +76,25 @@ public class UserDatabase extends Thread implements UserDatabaseInterface {
     public boolean createNewUser(String username, String password) throws PasswordException,
             UserAlreadyExistsException {
         synchronized (gateKeeper) {
-        if (password.length() < 7)
-            throw new PasswordException("The password should be at least 7 characters long.");
+            if (password.length() < 7)
+                throw new PasswordException("The password should be at least 7 characters long.");
 
-        User newUser = new User(username, password);
-        boolean alreadyExists = false;
-        for (String data : userData) {
-            String[] segments = data.split(",");
-            if (segments[0].equals(username)) {
-                alreadyExists = true;
-                break;
+            User newUser = new User(username, password);
+            boolean alreadyExists = false;
+            for (String data : userData) {
+                String[] segments = data.split(",");
+                if (segments[0].equals(username)) {
+                    alreadyExists = true;
+                    break;
+                }
             }
-        }
-        if (alreadyExists)
-            throw new UserAlreadyExistsException("This username already exists.");
+            if (alreadyExists)
+                throw new UserAlreadyExistsException("This username already exists.");
 
-        newUserData.add(newUser.toString());
+            newUserData.add(newUser.toString());
+
+            this.writeToDatabase();
+            this.readDatabase();
         }
         return true;
     }
@@ -224,5 +229,10 @@ public class UserDatabase extends Thread implements UserDatabaseInterface {
     public void setNewUserData(ArrayList<String> newUserData) {
         this.newUserData = newUserData;
     }
+
+    public String getFilePath() {
+        return filePath;
+    }
+
 }
 

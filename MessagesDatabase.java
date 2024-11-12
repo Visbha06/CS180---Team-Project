@@ -15,21 +15,23 @@ public class MessagesDatabase extends Thread implements MessageDatabaseInterface
     //    private ArrayList<String> newUserData;
     private final static Object gateKeeper = new Object();
     private UserDatabase userDatabase;
+    private String filePath;
 
     //constructor
-    public MessagesDatabase(String userDatabaseFilePath) {
+    public MessagesDatabase(String filepath, String userDatabaseFilePath) {
         if (userData == null) {
             this.userData = new ArrayList<>();
-            this.userDatabase = new UserDatabase();
+            this.userDatabase = new UserDatabase(userDatabaseFilePath);
+            this.filePath = filepath;
 
-            userDatabase.readDatabase(userDatabaseFilePath);
+            userDatabase.readDatabase();
         }
 //        this.newUserData = new ArrayList<>();
     }
 
     //methods
     @Override
-    public boolean readDatabase(String filePath) {
+    public boolean readDatabase() {
         synchronized (gateKeeper) {
             try (BufferedReader bfr = new BufferedReader(new FileReader(filePath))) {
                 String line = bfr.readLine();
@@ -46,7 +48,7 @@ public class MessagesDatabase extends Thread implements MessageDatabaseInterface
     }
 
     @Override
-    public boolean writeToDatabase(String filePath) {
+    public boolean writeToDatabase() {
         synchronized (gateKeeper) {
             try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath))) {
                 for (int i = 0; i < userData.size(); i++) {
@@ -96,17 +98,18 @@ public class MessagesDatabase extends Thread implements MessageDatabaseInterface
     //a new arrayList that has the messages from all users excluding their own
     public ArrayList<String> messageAllUsers(String username) {
         synchronized (gateKeeper) {
+            ArrayList<String> userDataCopy = userData;
             ArrayList<String> allUserMessages = new ArrayList<>();
 
-            for (int i = 0; i < userData.size(); ) {
-                if (userData.get(i).contains(username)) {
-                    userData.remove(i);
+            for (int i = 0; i < userDataCopy.size(); ) {
+                if (userDataCopy.get(i).contains(username)) {
+                    userDataCopy.remove(i);
                 } else {
                     i++;
                 }
             }
 
-            allUserMessages.addAll(userData); //sets allUserMessages to the modified userData
+            allUserMessages.addAll(userDataCopy); //sets allUserMessages to the modified userData
             return allUserMessages;
         }
     }
@@ -153,16 +156,20 @@ public class MessagesDatabase extends Thread implements MessageDatabaseInterface
         }
     }
 
-    public void addMessage(String username, String message) {
-        userData.add(username + ":" + message);
+    public void addMessage(String usernameOne, String usernameTwo, String message) {
+        synchronized (gateKeeper) {
+            String line = String.format("[%s;%s]:%s:%s", usernameOne, usernameTwo, usernameOne, message);
+            userData.add(line);
+            this.writeToDatabase();
+        }
     }
 
     public ArrayList<String> getUserData() {
         return userData;
     }
 
-//    public UserDatabase getUserDatabase() {
-//        return userDatabase;
-//    }
+    public String getFilePath() {
+        return filePath;
+    }
 
 }

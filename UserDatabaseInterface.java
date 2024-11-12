@@ -8,8 +8,8 @@
 
 public interface UserDatabaseInterface {
 
-    boolean readDatabase(String filepath);
-    boolean writeToDatabase(String filePath);
+    boolean readDatabase();
+    boolean writeToDatabase();
     boolean checkUsernameAndPassword(String username, String password);
     boolean createNewUser(String username, String password) throws PasswordException, UserAlreadyExistsException;
     boolean findUser(String username);

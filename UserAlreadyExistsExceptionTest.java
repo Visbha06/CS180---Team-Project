@@ -15,9 +15,9 @@ public class UserAlreadyExistsExceptionTest implements UserAlreadyExistsExceptio
 
     @Test
     public void throwsUserAlreadyExistsException() {
-        UserDatabase ud = new UserDatabase();
+        UserDatabase ud = new UserDatabase("userTest.txt");
 
-        boolean readResult = ud.readDatabase("testRead.txt");
+        boolean readResult = ud.readDatabase();
 
         Exception e = assertThrows(UserAlreadyExistsException.class, () -> {
             ud.createNewUser("VB06", "Ilikecars49");

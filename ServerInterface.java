@@ -14,8 +14,8 @@ public interface ServerInterface {
 
     void start();
 
-    ArrayList<String> loadUserData(String filepath);
+    ArrayList<String> loadUserData();
 
-    ArrayList<String> loadMessages(String filepath);
+    ArrayList<String> loadMessages();
 
 }

@@ -17,8 +17,8 @@ public class UserDatabaseTest implements UserDatabaseTestInterface {
 
     @Test(timeout = 1000)
     public void readDatabaseTest() {
-        UserDatabase db = new UserDatabase();
-        boolean result = db.readDatabase("testRead.txt");
+        UserDatabase db = new UserDatabase("testRead.txt");
+        boolean result = db.readDatabase();
         ArrayList<String> results = db.getUserData();
 
         assertTrue(result);
@@ -31,7 +31,7 @@ public class UserDatabaseTest implements UserDatabaseTestInterface {
 
     @Test(timeout = 1000)
     public void writeToDatabaseTest() {
-        UserDatabase db = new UserDatabase();
+        UserDatabase db = new UserDatabase("testWrite.txt");
         ArrayList<String> sampleData = new ArrayList<>();
 
         sampleData.add("newUser1,password1,[],[]");
@@ -39,7 +39,7 @@ public class UserDatabaseTest implements UserDatabaseTestInterface {
         sampleData.add("newUser3,password3,[],[]");
 
         db.setNewUserData(sampleData);
-        boolean result = db.writeToDatabase("testWrite.txt");
+        boolean result = db.writeToDatabase();
 
         assertTrue(result);
 
@@ -53,7 +53,7 @@ public class UserDatabaseTest implements UserDatabaseTestInterface {
 
     @Test(timeout = 1000)
     public void createNewUserTest() {
-        UserDatabase db = new UserDatabase();
+        UserDatabase db = new UserDatabase("userTest.txt");
         boolean result;
         try {
             result = db.createNewUser("VishalB", "abcdefg");
@@ -74,8 +74,8 @@ public class UserDatabaseTest implements UserDatabaseTestInterface {
 
     @Test(timeout = 1000)
     public void findUserTest() {
-        UserDatabase db = new UserDatabase();
-        db.readDatabase("testRead.txt");
+        UserDatabase db = new UserDatabase("testRead.txt");
+        db.readDatabase();
 
         assertTrue(db.findUser("James34"));
         assertFalse(db.findUser("nonExistentUser"));
@@ -83,17 +83,18 @@ public class UserDatabaseTest implements UserDatabaseTestInterface {
 
     @Test(timeout = 1000)
     public void checkUsernameAndPasswordTest() {
-        UserDatabase db = new UserDatabase();
-        db.readDatabase("testRead.txt");
+        UserDatabase db = new UserDatabase("testRead.txt");
+        db.readDatabase();
 
         assertTrue(db.checkUsernameAndPassword("James34", "sample_password123"));
         assertFalse(db.checkUsernameAndPassword("James34", "wrong_password"));
         assertFalse(db.checkUsernameAndPassword("UnknownUser", "any_password"));
     }
+
     @Test(timeout = 1000)
     public void addFriendTest() {
-        UserDatabase db = new UserDatabase();
-        db.readDatabase("testRead.txt");
+        UserDatabase db = new UserDatabase("testRead.txt");
+        db.readDatabase();
 
         boolean result = db.addFriend("James34", "Ben500");
         assertTrue(result);
@@ -111,8 +112,8 @@ public class UserDatabaseTest implements UserDatabaseTestInterface {
 
 @Test(timeout = 1000)
     public void blockUserTest() {
-        UserDatabase db = new UserDatabase();
-        db.readDatabase("testRead.txt");
+        UserDatabase db = new UserDatabase("testRead.txt");
+        db.readDatabase();
 
         boolean result = db.block("James34", "BlockedUser");
         assertTrue(result);
@@ -129,8 +130,8 @@ public class UserDatabaseTest implements UserDatabaseTestInterface {
 
     @Test(timeout = 1000)
     public void removeFriendTest() {
-        UserDatabase db = new UserDatabase();
-        db.readDatabase("testRead.txt");
+        UserDatabase db = new UserDatabase("testRead.txt");
+        db.readDatabase();
 
         boolean result = db.removeFriend("James34", "Ben500");
         assertTrue(result);
@@ -147,8 +148,8 @@ public class UserDatabaseTest implements UserDatabaseTestInterface {
 
     @Test(timeout = 1000)
     public void getUserDataTest() {
-        UserDatabase db = new UserDatabase();
-        db.readDatabase("testRead.txt"); // Populating userData from testRead.txt
+        UserDatabase db = new UserDatabase("testRead.txt");
+        db.readDatabase(); // Populating userData from testRead.txt
         ArrayList<String> result = db.getUserData();
 
         assertEquals(3, result.size());
@@ -159,8 +160,8 @@ public class UserDatabaseTest implements UserDatabaseTestInterface {
 
     @Test(timeout = 1000)
     public void getNewUserDataTest() {
-        UserDatabase db = new UserDatabase();
-        db.readDatabase("testCheckUsernameAndPassword.txt"); // Populating newUserData from testCheckUsernameAndPassword.txt
+        UserDatabase db = new UserDatabase("testCheckUsernameAndPassword.txt");
+        db.readDatabase(); // Populating newUserData from testCheckUsernameAndPassword.txt
         ArrayList<String> result = db.getNewUserData();
 
         assertEquals(3, result.size());
@@ -171,7 +172,7 @@ public class UserDatabaseTest implements UserDatabaseTestInterface {
 
     @Test(timeout = 1000)
     public void setUserDataTest() {
-        UserDatabase db = new UserDatabase();
+        UserDatabase db = new UserDatabase("testRead.txt");
         ArrayList<String> sampleData = new ArrayList<>();
         sampleData.add("userA,passwordA,[friendA],[blockedA]");
         sampleData.add("userB,passwordB,[friendB],[blockedB]");
@@ -186,7 +187,7 @@ public class UserDatabaseTest implements UserDatabaseTestInterface {
 
     @Test(timeout = 1000)
     public void setNewUserDataTest() {
-        UserDatabase db = new UserDatabase();
+        UserDatabase db = new UserDatabase("testRead.txt");
         ArrayList<String> sampleData = new ArrayList<>();
         sampleData.add("testUser1,testPass1,[],[]");
         sampleData.add("testUser2,testPass2,[Friend1],[Blocked1]");

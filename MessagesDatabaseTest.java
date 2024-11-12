@@ -13,11 +13,11 @@ import static org.junit.Assert.assertTrue;
 
 public class MessagesDatabaseTest implements MessagesDatabaseTestInterface {
 
-    MessagesDatabase md = new MessagesDatabase("userTest.txt");
+    MessagesDatabase md = new MessagesDatabase("messagesTest.txt", "userTest.txt");
 
     @Test(timeout = 1000)
     public void readDatabaseTest() {
-        boolean readResult = md.readDatabase("messagesTest.txt");
+        boolean readResult = md.readDatabase();
         var results = md.getUserData();
 
         assertTrue(readResult);
@@ -33,10 +33,10 @@ public class MessagesDatabaseTest implements MessagesDatabaseTestInterface {
         String username = "John45";
         String message = "Yeah same here.";
 
-        md.readDatabase("messagesTest.txt");
+        md.readDatabase();
         md.addMessage(username, message);
-        boolean writeResult = md.writeToDatabase("messagesTest.txt");
-        boolean readResult = md.readDatabase("messagesTest.txt");
+        boolean writeResult = md.writeToDatabase();
+        boolean readResult = md.readDatabase();
         var results = md.getUserData();
 
         assertTrue(writeResult);
@@ -51,7 +51,7 @@ public class MessagesDatabaseTest implements MessagesDatabaseTestInterface {
 
     @Test(timeout = 1000)
     public void findMessagesTest() {
-        boolean readResult = md.readDatabase("messagesTest.txt");
+        boolean readResult = md.readDatabase();
         var foundMessages = md.findMessages("John45");
 
         StringBuilder output = new StringBuilder();
@@ -67,10 +67,10 @@ public class MessagesDatabaseTest implements MessagesDatabaseTestInterface {
 
     @Test(timeout = 1000)
     public void deleteMessagesTest() {
-        boolean readResult = md.readDatabase("messagesTest.txt");
+        boolean readResult = md.readDatabase();
         boolean deleteResult = md.deleteMessage("John45", "Yeah same here.");
         var results = md.getUserData();
-        boolean writeResult = md.writeToDatabase("messagesTest.txt");
+        boolean writeResult = md.writeToDatabase();
 
         assertTrue(readResult);
         assertTrue(deleteResult);
@@ -84,7 +84,7 @@ public class MessagesDatabaseTest implements MessagesDatabaseTestInterface {
 
     @Test(timeout = 1000)
     public void messageAllUsersTest() {
-        boolean readResult = md.readDatabase("messagesTest.txt");
+        boolean readResult = md.readDatabase();
         var allUserMessages = md.messageAllUsers("John45");
 
         String expected = "Ben500:Been good, hbu?\nBen500:Same here, I have this project to work on.\n";
@@ -101,7 +101,7 @@ public class MessagesDatabaseTest implements MessagesDatabaseTestInterface {
 
     @Test (timeout = 1000)
     public void messageOnlyFriendsTest() {
-        boolean result = md.readDatabase("messagesTest.txt");
+        boolean result = md.readDatabase();
         var results = md.messageOnlyFriends("John45");
 
         String expected = "Ben500\n";
@@ -117,7 +117,7 @@ public class MessagesDatabaseTest implements MessagesDatabaseTestInterface {
 
     @Test(timeout = 1000)
     public void addMessageTest() {
-        boolean result = md.readDatabase("messagesTest.txt");
+        boolean result = md.readDatabase();
         md.addMessage("Ben500", "Test message.");
 
         var data = md.getUserData();
@@ -132,7 +132,7 @@ public class MessagesDatabaseTest implements MessagesDatabaseTestInterface {
 
     @Test(timeout = 1000)
     public void getUserDataTest() {
-        boolean result = md.readDatabase("messagesTest.txt");
+        boolean result = md.readDatabase();
         var userData = md.getUserData();
 
         String expected = "John45:Hey! How's your day been?\nBen500:Been good, hbu?\nJohn45:I've been busy lately.\n" +
