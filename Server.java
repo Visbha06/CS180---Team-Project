@@ -65,6 +65,7 @@ public class Server implements ServerInterface {
                     BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                     PrintWriter out = new PrintWriter(clientSocket.getOutputStream())
             ) {
+                // All messages sent to the server should be in the following format: "ID:UserOne:UserTwo:Message"
                 String inputLine = in.readLine();
                 while (inputLine != null) {
                     int index = Integer.parseInt(inputLine.split(":", 4)[0]);
