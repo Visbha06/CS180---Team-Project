@@ -8,5 +8,5 @@
 
 public interface ActionInterface {
 
-    public int getValue();
+    int getValue();
 }

@@ -2,6 +2,14 @@ import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 
+/**
+ * Server.java
+ * The main server that processes information and returns it to the client.
+ *
+ * @author Vishal Bhat, Brayden Hipp -- Section L25
+ * @version 14 November 2024
+ */
+
 public class Server implements ServerInterface {
 
     private static UserDatabase userDatabase;
@@ -65,101 +73,124 @@ public class Server implements ServerInterface {
                     BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                     PrintWriter out = new PrintWriter(clientSocket.getOutputStream())
             ) {
-                // All messages sent to the server should be in the following format: "ID:UserOne:UserTwo:Message"
+                // Send login information in this format: "Username:password"
                 String inputLine = in.readLine();
-                while (inputLine != null) {
-                    int index = Integer.parseInt(inputLine.split(":", 4)[0]);
-                    String usernameOne = inputLine.split(":", 4)[1];
-                    String usernameTwo = inputLine.split(":", 4)[2];
-                    String message = inputLine.split(":", 4)[3];
+                String[] elements = inputLine.split(":");
+                if (Server.userDatabase.checkUsernameAndPassword(elements[0], elements[1])) {
+                    var data = Server.userDatabase.getUserData();
+                    StringBuilder returnData = new StringBuilder();
+                    for (String line : data) {
+                        if (!line.contains(elements[0])) {
+                            String[] dataElements = line.split(",", 2);
+                            returnData.append(dataElements[0]).append(" ");
+                        }
+                    }
+                    out.write(returnData.toString());
+                    out.println();
+                    out.flush();
 
-                    Action action = Action.fromInt(index);
+                    // All messages sent to the server should be in the following format: "ID:UserOne:UserTwo:Message"
+                    inputLine = in.readLine();
+                    while (inputLine != null) {
+                        int index = Integer.parseInt(inputLine.split(":", 4)[0]);
+                        String usernameOne = inputLine.split(":", 4)[1];
+                        String usernameTwo = inputLine.split(":", 4)[2];
+                        String message = inputLine.split(":", 4)[3];
 
-                    switch (action) {
-                        case SEND_MESSAGE:
-                            Server.messagesDatabase.addMessage(usernameOne, usernameTwo, message);
-                            break;
-                        case FIND_MESSAGE:
-                            ArrayList<String> resultMessages = Server.messagesDatabase.findMessages(usernameOne);
-                            String[] resultMessagesArr = resultMessages.toArray(new String[0]);
-                            String joinedDataMessages = String.join(",", resultMessagesArr);
-                            out.write(joinedDataMessages);
-                            out.println();
-                            out.flush();
-                            break;
-                        case DELETE_MESSAGE:
-                            boolean resultDelete = Server.messagesDatabase.deleteMessage(usernameOne, message);
-                            if (resultDelete) {
-                                out.write("Message deleted");
+                        Action action = Action.fromInt(index);
+
+                        switch (action) {
+                            case SEND_MESSAGE:
+                                Server.messagesDatabase.addMessage(usernameOne, usernameTwo, message);
+                                break;
+                            case FIND_MESSAGE:
+                                ArrayList<String> resultMessages = Server.messagesDatabase.findMessages(usernameOne);
+                                String[] resultMessagesArr = resultMessages.toArray(new String[0]);
+                                String joinedDataMessages = String.join(",", resultMessagesArr);
+                                out.write(joinedDataMessages);
                                 out.println();
                                 out.flush();
-                            }
-                            break;
-                        case ALL_USERS:
-                            ArrayList<String> resultAllUsers = Server.messagesDatabase.messageAllUsers(usernameOne);
-                            String[] resultAllUsersArr = resultAllUsers.toArray(new String[0]);
-                            String joinedDataAllUsers = String.join(",", resultAllUsersArr);
-                            out.write(joinedDataAllUsers);
-                            out.println();
-                            out.flush();
-                            break;
-                        case FRIENDS_ONLY:
-                            ArrayList<String> resultFriends = Server.messagesDatabase.messageOnlyFriends(usernameOne);
-                            String[] resultFriendsArr = resultFriends.toArray(new String[0]);
-                            String joinedDataFriends = String.join(",", resultFriendsArr);
-                            out.write(joinedDataFriends);
-                            out.println();
-                            out.flush();
-                            break;
-                        case CREATE_USER:
-                            boolean resultNewUser;
-                            try {
-                                resultNewUser = Server.userDatabase.createNewUser(usernameOne, message);
-                                if (resultNewUser) {
-                                    out.write("User created");
+                                break;
+                            case DELETE_MESSAGE:
+                                boolean resultDelete = Server.messagesDatabase.deleteMessage(usernameOne, message);
+                                if (resultDelete) {
+                                    out.write("Message deleted");
                                     out.println();
                                     out.flush();
                                 }
-                            } catch (PasswordException | UserAlreadyExistsException e) {
-                                out.write(e.getMessage());
+                                break;
+                            case ALL_USERS:
+                                ArrayList<String> resultAllUsers = Server.messagesDatabase.messageAllUsers(usernameOne);
+                                String[] resultAllUsersArr = resultAllUsers.toArray(new String[0]);
+                                String joinedDataAllUsers = String.join(",", resultAllUsersArr);
+                                out.write(joinedDataAllUsers);
                                 out.println();
                                 out.flush();
-                            }
-                            break;
-                        case FIND_USER:
+                                break;
+                            case FRIENDS_ONLY:
+                                ArrayList<String> resultFriends =
+                                        Server.messagesDatabase.messageOnlyFriends(usernameOne);
+                                String[] resultFriendsArr = resultFriends.toArray(new String[0]);
+                                String joinedDataFriends = String.join(",", resultFriendsArr);
+                                out.write(joinedDataFriends);
+                                out.println();
+                                out.flush();
+                                break;
+                            case CREATE_USER:
+                                boolean resultNewUser;
+                                try {
+                                    resultNewUser = Server.userDatabase.createNewUser(usernameOne, message);
+                                    if (resultNewUser) {
+                                        out.write("User created");
+                                        out.println();
+                                        out.flush();
+                                    }
+                                } catch (PasswordException | UserAlreadyExistsException e) {
+                                    out.write(e.getMessage());
+                                    out.println();
+                                    out.flush();
+                                }
+                                break;
+                            case FIND_USER:
 
-                            break;
-                        case ADD_FRIEND:
-                            boolean resultAddFriend = Server.userDatabase.addFriend(usernameOne, usernameTwo);
-                            if (resultAddFriend) {
-                                out.write(usernameTwo + " added!");
-                                out.println();
-                                out.flush();
-                            }
-                            Server.userDatabase.readDatabase();
-                            break;
-                        case REMOVE_FRIEND:
-                            boolean resultRemoveFriend = Server.userDatabase.removeFriend(usernameOne, usernameTwo);
-                            if (resultRemoveFriend) {
-                                out.write(usernameTwo + " removed!");
-                                out.println();
-                                out.flush();
-                            }
-                            Server.userDatabase.readDatabase();
-                            break;
-                        case BLOCK:
-                            boolean resultBlock = Server.userDatabase.block(usernameOne, usernameTwo);
-                            if (resultBlock) {
-                                out.write(usernameTwo + " blocked!");
-                                out.println();
-                                out.flush();
-                            }
-                            Server.userDatabase.readDatabase();
-                            break;
+                                break;
+                            case ADD_FRIEND:
+                                boolean resultAddFriend = Server.userDatabase.addFriend(usernameOne, usernameTwo);
+                                if (resultAddFriend) {
+                                    out.write(usernameTwo + " added!");
+                                    out.println();
+                                    out.flush();
+                                }
+                                Server.userDatabase.readDatabase();
+                                break;
+                            case REMOVE_FRIEND:
+                                boolean resultRemoveFriend = Server.userDatabase.removeFriend(usernameOne, usernameTwo);
+                                if (resultRemoveFriend) {
+                                    out.write(usernameTwo + " removed!");
+                                    out.println();
+                                    out.flush();
+                                }
+                                Server.userDatabase.readDatabase();
+                                break;
+                            case BLOCK:
+                                boolean resultBlock = Server.userDatabase.block(usernameOne, usernameTwo);
+                                if (resultBlock) {
+                                    out.write(usernameTwo + " blocked!");
+                                    out.println();
+                                    out.flush();
+                                }
+                                Server.userDatabase.readDatabase();
+                                break;
+                        }
+
+                        inputLine = in.readLine();
                     }
-
-                    inputLine = in.readLine();
+                } else {
+                    out.write("LOGIN ERROR");
+                    out.println();
+                    out.flush();
                 }
+
             } catch (IOException e) {
                 e.printStackTrace();
             } finally {

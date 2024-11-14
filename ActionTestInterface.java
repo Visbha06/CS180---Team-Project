@@ -8,10 +8,10 @@
 
 public interface ActionTestInterface {
 
-    public void testEnumValues();
+    void testEnumValues();
 
-    public void testFromInt();
+    void testFromInt();
 
-    public void testFromThrowsException();
+    void testFromIntThrowsException();
 
 }

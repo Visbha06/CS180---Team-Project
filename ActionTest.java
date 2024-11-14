@@ -3,8 +3,17 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 
-public class ActionTest {
+/**
+ * ActionTest.java
+ * Test cases for the enum Action
+ *
+ * @author Vishal Bhat
+ * @version 14 November 2024
+ */
 
+public class ActionTest implements ActionTestInterface {
+
+    @Override
     @Test(timeout = 1000)
     public void testEnumValues() {
         assertEquals(1, Action.SEND_MESSAGE.getValue());
@@ -19,6 +28,7 @@ public class ActionTest {
         assertEquals(10, Action.BLOCK.getValue());
     }
 
+    @Override
     @Test(timeout = 1000)
     public void testFromInt() {
         assertEquals(Action.SEND_MESSAGE, Action.fromInt(1));
@@ -33,6 +43,7 @@ public class ActionTest {
         assertEquals(Action.BLOCK, Action.fromInt(10));
     }
 
+    @Override
     @Test(timeout = 1000)
     public void testFromIntThrowsException() {
         Exception exception = assertThrows(IllegalAccessException.class, () -> {
