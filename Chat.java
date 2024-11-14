@@ -24,5 +24,10 @@ public class Chat implements ChatInterface {
         return (userOne.equals(chat.userOne) && userTwo.equals(chat.userTwo)) ||
                 (userOne.equals(chat.userTwo) && userTwo.equals(chat.userOne));
     }
+
+    public String toString() {
+
+            return String.format("[%s;%s]", userOne.getUsername(), userTwo.getUsername());
+    }
 }
 

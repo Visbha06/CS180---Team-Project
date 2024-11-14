@@ -10,4 +10,5 @@ public interface ChatInterface {
 
     boolean equals(Object o);
 
+    String toString();
 }
