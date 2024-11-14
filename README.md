@@ -80,5 +80,12 @@ The userTestInterface contains an outline for the methods in the userTest class 
 The passwordException class is a custom exception that is meant to be thrown when a password is under 7 characters long. There is a testing class for this exception that ensures that this exception is only thrown in the correct scenarios.
 #### UserAlreadyExistsException-
 The userAlreadyExists exception is a custom exception that is meant to be thrown when a user attempts to create a username that has already been created. There is a testing class for this exception that ensures that this exception is thrown in the correct scenarios.
-
-
+## Phase 2
+#### ServerInterface-
+The ServerInterface class contains an outline for the methods in the server class consisting of the start, LoadUserData, and loadMessages methods and also a static final variables representing the port number
+#### ServerTestInterface-
+The ServerTestInterface contains an outline for the methods designed to test the functionality of the ServerInterface
+#### Server-
+The server class is responsible for handling all the requests inputted by the user in the Client class and returning those results to the user.
+#### Client-
+The client class is responsible for taking user input and sending that input to the server class to execute the requested command. 
