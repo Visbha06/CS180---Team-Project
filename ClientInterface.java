@@ -1,3 +1,4 @@
+
 /**
  * ClientInterface.java
  * Creates an interface for the Client Class of the platform
