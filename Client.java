@@ -68,18 +68,42 @@ public class Client {
                         break;
 
                     case "6": // CREATE_USER
+                        System.out.println("Create your username (UserOne): ");
+                        userOne = scanner.nextLine();
+                        userTwo = "NONE";
+                        System.out.println("Create your password: ");
+                        message = scanner.nextLine();
+                        break;
+
 
 
                     case "7": // FIND_USER
 
 
                     case "8": // ADD_FRIEND
-
+                        System.out.println("Enter your username (UserOne): " );
+                        userOne = scanner.nextLine();
+                        System.out.println("Enter username of friend you want to add (UserTwo): " );
+                        userTwo = scanner.nextLine();
+                        message = "NONE";
+                        break;
 
                     case "9": // REMOVE_FRIEND
+                        System.out.println("Enter your username (UserOne): ");
+                        userOne = scanner.nextLine();
+                        System.out.println("Enter the username of the friend you want to remove (UserTwo): ");
+                        userTwo = scanner.nextLine();
+                        message = "NONE";
+                        break;
 
 
                     case "10": // BLOCK
+                        System.out.println("Enter your username (UserOne): ");
+                        userOne = scanner.nextLine();
+                        System.out.println("Enter the username of the user you want to block (UserTwo): ");
+                        userTwo = scanner.nextLine();
+                        message = "NONE";
+                        break;
 
 
                     default:
