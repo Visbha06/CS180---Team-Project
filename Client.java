@@ -78,6 +78,11 @@ public class Client {
 
 
                     case "7": // FIND_USER
+                        System.out.println("Enter their username (UserOne): ");
+                        userOne = scanner.nextLine();
+                        userTwo = "NONE";
+                        message = "NONE";
+                        break;
 
 
                     case "8": // ADD_FRIEND
