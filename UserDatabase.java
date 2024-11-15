@@ -99,15 +99,15 @@ public class UserDatabase extends Thread implements UserDatabaseInterface {
         return true;
     }
 
-    public boolean findUser(String username) {
+    public String findUser(String username) {
         synchronized (gateKeeper) {
             for (String user : userData) {
                 String[] piece = user.split(",");
                 if (piece[0].equals(username)) {
-                    return true;
+                    return piece[0];
                 }
             }
-            return false;
+            return "NOT_FOUND";
         }
     }
 

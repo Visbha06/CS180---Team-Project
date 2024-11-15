@@ -12,7 +12,7 @@ public interface UserDatabaseInterface {
     boolean writeToDatabase();
     boolean checkUsernameAndPassword(String username, String password);
     boolean createNewUser(String username, String password) throws PasswordException, UserAlreadyExistsException;
-    boolean findUser(String username);
+    String findUser(String username);
     boolean addFriend(String mainUser, String friendRequest);
     boolean removeFriend( String mainUser, String friend);
     boolean block(String mainUser, String blockedUser);

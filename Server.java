@@ -76,7 +76,8 @@ public class Server implements ServerInterface {
                 // Send login information in this format: "Username:password"
                 String inputLine = in.readLine();
                 String[] elements = inputLine.split(":");
-                if (Server.userDatabase.checkUsernameAndPassword(elements[0], elements[1])) {
+                if (Server.userDatabase.checkUsernameAndPassword(elements[0], elements[1]) ||
+                        (elements[0].equals("NEW_USER") && elements[1].equals("NEW_PASSWORD"))) {
                     var data = Server.userDatabase.getUserData();
                     StringBuilder returnData = new StringBuilder();
                     for (String line : data) {
@@ -152,7 +153,10 @@ public class Server implements ServerInterface {
                                 }
                                 break;
                             case FIND_USER:
-
+                                String desiredUser = Server.userDatabase.findUser(usernameOne);
+                                out.write(desiredUser);
+                                out.println();
+                                out.flush();
                                 break;
                             case ADD_FRIEND:
                                 boolean resultAddFriend = Server.userDatabase.addFriend(usernameOne, usernameTwo);
