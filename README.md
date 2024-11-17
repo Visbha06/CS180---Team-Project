@@ -87,7 +87,7 @@ ServerInterface, ClientInterface, ServerTestInterface, ActionInterface, ActionTe
 ##### Sathvik:
 Client
 ##### Brayden:
-Client and the README.
+Client, Server, and README.
 ##### Vishal:
 Server, ServerTest, Action, and made changes to MessagesDatabase and MessagesDatabaseTest. 
 
@@ -95,7 +95,7 @@ Server, ServerTest, Action, and made changes to MessagesDatabase and MessagesDat
 #### ServerInterface-
 The ServerInterface class contains an outline for the methods in the server class consisting of the start, LoadUserData, and loadMessages methods and also a static final variables representing the port number
 #### ClientInterface-
-
+The client interface contains an outline for the methods and functionality in the client class.
 #### ServerTestInterface-
 The ServerTestInterface contains an outline for the methods designed to test the functionality of the ServerInterface
 #### ClientTestInterface-
@@ -105,11 +105,12 @@ The server class is responsible for handling all the requests inputted by the us
 #### Client-
 The client class is responsible for taking user input and sending that input to the server class to execute the requested command. 
 #### ServerTest-
-
+The purpose of the server test class is to make sure the client is to make sure that it is loading the correct user data and message data. This is to ensure that the server is able to send the correct data back to the client.
 #### ClientTest-
 
 #### ActionInterface-
-
+The action interface outlines the get value function in the action enum which returns and integer value based on what command is selected.
 #### ActionTestInterface-
-
+The action test interface outlines the test cases for the actionTest class.
 #### Action-
+The action class is a enum that is used for handling user input and processing user input with the given value. It's utilized in the client class for when the user is selecting what action they would like to perform.
