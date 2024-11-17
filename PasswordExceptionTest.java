@@ -12,7 +12,7 @@ import static org.junit.Assert.assertTrue;
  */
 
 public class PasswordExceptionTest implements PasswordExceptionTestInterface {
-
+//tests PasswordException
     @Test(timeout = 1000)
     public void throwsPasswordExceptionTest() {
         UserDatabase ud = new UserDatabase("testRead.txt");

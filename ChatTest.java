@@ -12,7 +12,7 @@ import static org.junit.Assert.assertTrue;
  */
 
 public class ChatTest implements ChatTestInterface {
-
+//tests the Equals method
     @Test(timeout = 1000)
     public void equalsTest() {
         User userOne = new User("VishalB", "abcdefg");

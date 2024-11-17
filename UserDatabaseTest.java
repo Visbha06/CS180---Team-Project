@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
  */
 
 public class UserDatabaseTest implements UserDatabaseTestInterface {
-
+// tests readDataBase Method
     @Test(timeout = 1000)
     public void readDatabaseTest() {
         UserDatabase db = new UserDatabase("testRead.txt");
@@ -27,7 +27,7 @@ public class UserDatabaseTest implements UserDatabaseTestInterface {
         assertEquals("Ben500,ilikecats15,[],[]", results.get(1));
         assertEquals("VB06,csmajor45,[],[]", results.get(2));
     }
-
+    // tests writeToDatabase Method
     @Test(timeout = 1000)
     public void writeToDatabaseTest() {
         UserDatabase db = new UserDatabase("testWrite.txt");
@@ -49,7 +49,7 @@ public class UserDatabaseTest implements UserDatabaseTestInterface {
         assertEquals("newUser2,password2,[],[]", results.get(1));
         assertEquals("newUser3,password3,[],[]", results.get(2));
     }
-
+    // tests createNewUser Method
     @Test(timeout = 1000)
     public void createNewUserTest() {
         UserDatabase db = new UserDatabase("userTest.txt");
@@ -70,19 +70,22 @@ public class UserDatabaseTest implements UserDatabaseTestInterface {
 
         assertEquals(expected, newUser.toString());
     }
-
+    // tests findUser Method
     @Test(timeout = 1000)
     public void findUserTest() {
+        // Initialize test UserDatabase with a test file
         UserDatabase db = new UserDatabase("testRead.txt");
         db.readDatabase();
 
+        // Test case for an existing user
         String userOne = "James34";
+        assertEquals("James34", db.findUser(userOne), "Existing user should be found.");
+
+        // Test case for a non-existent user
         String userTwo = "nonExistentUser";
-
-        assertEquals("James34", db.findUser(userOne));
-        assertNotEquals("NOT_FOUND", db.findUser(userTwo));
+        assertEquals("NOT_FOUND", db.findUser(userTwo), "Non-existent user should return NOT_FOUND.");
     }
-
+    // tests checkUsernameAndPassword Method
     @Test(timeout = 1000)
     public void checkUsernameAndPasswordTest() {
         UserDatabase db = new UserDatabase("testRead.txt");
@@ -92,7 +95,7 @@ public class UserDatabaseTest implements UserDatabaseTestInterface {
         assertFalse(db.checkUsernameAndPassword("James34", "wrong_password"));
         assertFalse(db.checkUsernameAndPassword("UnknownUser", "any_password"));
     }
-
+    // tests addFriend Method
     @Test(timeout = 1000)
     public void addFriendTest() {
         UserDatabase db = new UserDatabase("testRead.txt");
@@ -111,7 +114,7 @@ public class UserDatabaseTest implements UserDatabaseTestInterface {
         assertFalse(result);
 
 }
-
+    // tests blockUser Method
 @Test(timeout = 1000)
     public void blockUserTest() {
         UserDatabase db = new UserDatabase("testRead.txt");
@@ -129,7 +132,7 @@ public class UserDatabaseTest implements UserDatabaseTestInterface {
         result = db.block("NonexistentUser", "AnyUser");
         assertFalse(result);
     }
-
+    // tests removeFriend Method
     @Test(timeout = 1000)
     public void removeFriendTest() {
         UserDatabase db = new UserDatabase("testRead.txt");
@@ -147,7 +150,7 @@ public class UserDatabaseTest implements UserDatabaseTestInterface {
         result = db.removeFriend("NonexistentUser", "AnyFriend");
         assertFalse(result);
     }
-
+    // tests getUserData Method
     @Test(timeout = 1000)
     public void getUserDataTest() {
         UserDatabase db = new UserDatabase("testRead.txt");
@@ -159,7 +162,7 @@ public class UserDatabaseTest implements UserDatabaseTestInterface {
         assertEquals("Ben500,ilikecats15,[],[]", result.get(1));
         assertEquals("VB06,csmajor45,[],[]", result.get(2));
     }
-
+    // tests getNewUserData Method
     @Test(timeout = 1000)
     public void getNewUserDataTest() {
         UserDatabase db = new UserDatabase("testCheckUsernameAndPassword.txt");
@@ -171,7 +174,7 @@ public class UserDatabaseTest implements UserDatabaseTestInterface {
         assertEquals("Ben500,ilikecats15,[],[]", result.get(1));
         assertEquals("VB06,csmajor45,[],[]", result.get(2));
     }
-
+    // tests setUserData Method
     @Test(timeout = 1000)
     public void setUserDataTest() {
         UserDatabase db = new UserDatabase("testRead.txt");
@@ -186,7 +189,7 @@ public class UserDatabaseTest implements UserDatabaseTestInterface {
         assertEquals("userA,passwordA,[friendA],[blockedA]", result.get(0));
         assertEquals("userB,passwordB,[friendB],[blockedB]", result.get(1));
     }
-
+    // tests NewUserData Method
     @Test(timeout = 1000)
     public void setNewUserDataTest() {
         UserDatabase db = new UserDatabase("testRead.txt");

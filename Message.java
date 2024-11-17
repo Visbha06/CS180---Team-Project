@@ -10,12 +10,12 @@ public class Message implements MessageInterface {
 
     private String user;
     private String message;
-
+//initialized the message object
     public Message(String user, String message) {
         this.user = user;
         this.message = message;
     }
-
+// returns the user:message
     public String toString() {
         return user + ":" + message;
     }

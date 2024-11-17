@@ -29,7 +29,7 @@ public class MessagesDatabase extends Thread implements MessageDatabaseInterface
 //        this.newUserData = new ArrayList<>();
     }
 
-    //methods
+    //Reads messages from the database file into the `userData` list.
     @Override
     public boolean readDatabase() {
         synchronized (gateKeeper) {
@@ -46,7 +46,7 @@ public class MessagesDatabase extends Thread implements MessageDatabaseInterface
         }
         return true;
     }
-
+//Writes messages from the `userData` list into the database file.
     @Override
     public boolean writeToDatabase() {
         synchronized (gateKeeper) {
@@ -62,7 +62,7 @@ public class MessagesDatabase extends Thread implements MessageDatabaseInterface
         }
         return true;
     }
-
+//finds all messages from a user
     public ArrayList<String> findMessages(String username) {
         synchronized (gateKeeper) {
             //stores all the messages by a certain username arrayList
@@ -79,7 +79,7 @@ public class MessagesDatabase extends Thread implements MessageDatabaseInterface
         }
 
     }
-
+// delete a specific message from a user
     public boolean deleteMessage(Chat chat, String username, String message) {
         int originalSize = userData.size();
         synchronized (gateKeeper) {
@@ -131,7 +131,7 @@ public class MessagesDatabase extends Thread implements MessageDatabaseInterface
             return allUserMessages;
         }
     }
-
+//find messages from friends only
     public ArrayList<String> messageOnlyFriends(String username) {
         synchronized (gateKeeper) {
             ArrayList<String> friendsOnly = new ArrayList<>();
@@ -173,7 +173,7 @@ public class MessagesDatabase extends Thread implements MessageDatabaseInterface
             return friendsOnly;
         }
     }
-
+// adds a message and adds it into the database
     public void addMessage(String usernameOne, String usernameTwo, String message) {
         synchronized (gateKeeper) {
             String line = String.format("[%s;%s]:%s:%s", usernameOne, usernameTwo, usernameOne, message);
@@ -181,11 +181,11 @@ public class MessagesDatabase extends Thread implements MessageDatabaseInterface
             this.writeToDatabase();
         }
     }
-
+//returns userData
     public ArrayList<String> getUserData() {
         return userData;
     }
-
+//returns userDatabase
     public UserDatabase getUserDatabase() {
         return userDatabase;
     }

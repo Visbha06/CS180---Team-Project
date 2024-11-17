@@ -10,11 +10,11 @@ import static org.junit.Assert.assertThrows;
  * @author Vishal Bhat
  * @version 14 November 2024
  */
-
 public class ActionTest implements ActionTestInterface {
 
     @Override
     @Test(timeout = 1000)
+    // tests the EnumValues
     public void testEnumValues() {
         assertEquals(1, Action.SEND_MESSAGE.getValue());
         assertEquals(2, Action.FIND_MESSAGE.getValue());
@@ -27,7 +27,7 @@ public class ActionTest implements ActionTestInterface {
         assertEquals(9, Action.REMOVE_FRIEND.getValue());
         assertEquals(10, Action.BLOCK.getValue());
     }
-
+// Test the FromInt values
     @Override
     @Test(timeout = 1000)
     public void testFromInt() {
@@ -42,7 +42,7 @@ public class ActionTest implements ActionTestInterface {
         assertEquals(Action.REMOVE_FRIEND, Action.fromInt(9));
         assertEquals(Action.BLOCK, Action.fromInt(10));
     }
-
+// tests the FromIntThrows Exception
     @Override
     @Test(timeout = 1000)
     public void testFromIntThrowsException() {

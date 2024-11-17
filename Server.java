@@ -16,12 +16,12 @@ public class Server implements ServerInterface {
     private static MessagesDatabase messagesDatabase;
     private static ArrayList<String> userData;
     private static ArrayList<String> messageData;
-
+// constructs Server Object
     public Server(UserDatabase userDatabase, MessagesDatabase messagesDatabase) {
         Server.userDatabase = userDatabase;
         Server.messagesDatabase = messagesDatabase;
     }
-
+    // Starts the server and listens for client connections
     @Override
     public void start() {
         userData = loadUserData();
@@ -29,6 +29,7 @@ public class Server implements ServerInterface {
 
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             System.out.println("Server is running on port: " + PORT);
+            // Accept and handle client connections
             while (true) {
                 Socket socket = serverSocket.accept();
                 System.out.println("New client connected: " + socket.getInetAddress());
@@ -39,7 +40,7 @@ public class Server implements ServerInterface {
             e.printStackTrace();
         }
     }
-
+    // Loads message data from the database
     @Override
     public ArrayList<String> loadMessages() {
         boolean messageDataLoaded = messagesDatabase.readDatabase();
@@ -49,7 +50,7 @@ public class Server implements ServerInterface {
             return null;
         }
     }
-
+    // Loads user data from the database
     @Override
     public ArrayList<String> loadUserData() {
         boolean userDataLoaded = userDatabase.readDatabase();
@@ -59,7 +60,7 @@ public class Server implements ServerInterface {
             return null;
         }
     }
-
+    // Handles individual client connections
     private static class ClientHandler implements Runnable {
         private Socket clientSocket;
 
@@ -79,6 +80,8 @@ public class Server implements ServerInterface {
                     String[] elements = inputLine.split(":");
                     if (Server.userDatabase.checkUsernameAndPassword(elements[0], elements[1]) ||
                             (elements[0].equals("NEW_USER") && elements[1].equals("NEW_PASSWORD"))) {
+
+                        // Send list of users excluding the current user
                         var data = Server.userDatabase.getUserData();
                         StringBuilder returnData = new StringBuilder();
                         for (String line : data) {
@@ -103,9 +106,11 @@ public class Server implements ServerInterface {
 
                             switch (action) {
                                 case SEND_MESSAGE:
+                                    // Handle sending a message
                                     Server.messagesDatabase.addMessage(usernameOne, usernameTwo, message);
                                     break;
                                 case FIND_MESSAGE:
+                                    // Find Messages for a user
                                     ArrayList<String> resultMessages = Server.messagesDatabase.findMessages(usernameOne);
                                     String[] resultMessagesArr = resultMessages.toArray(new String[0]);
                                     String joinedDataMessages = String.join(",", resultMessagesArr);
@@ -114,6 +119,7 @@ public class Server implements ServerInterface {
                                     out.flush();
                                     break;
                                 case DELETE_MESSAGE:
+                                    //Deletes a specific message
                                     String passwordOne = Server.userDatabase.findUserAndPassword(usernameOne)
                                             .split(" ")[1];
                                     String passwordTwo = Server.userDatabase.findUserAndPassword(usernameTwo)
@@ -132,6 +138,7 @@ public class Server implements ServerInterface {
                                     }
                                     break;
                                 case ALL_USERS:
+                                    //sends message to all users
                                     ArrayList<String> resultAllUsers =
                                             Server.messagesDatabase.messageAllUsers(usernameOne);
                                     String[] resultAllUsersArr = resultAllUsers.toArray(new String[0]);
@@ -141,6 +148,7 @@ public class Server implements ServerInterface {
                                     out.flush();
                                     break;
                                 case FRIENDS_ONLY:
+                                    //sends messages to friends only
                                     ArrayList<String> resultFriends =
                                             Server.messagesDatabase.messageOnlyFriends(usernameOne);
                                     String[] resultFriendsArr = resultFriends.toArray(new String[0]);
@@ -150,6 +158,7 @@ public class Server implements ServerInterface {
                                     out.flush();
                                     break;
                                 case CREATE_USER:
+                                    // creates a new user
                                     boolean resultNewUser;
                                     try {
                                         resultNewUser = Server.userDatabase.createNewUser(usernameOne, message);
@@ -165,12 +174,14 @@ public class Server implements ServerInterface {
                                     }
                                     break;
                                 case FIND_USER:
+                                    // Finds a specific user
                                     String desiredUser = Server.userDatabase.findUser(usernameOne);
                                     out.write(desiredUser);
                                     out.println();
                                     out.flush();
                                     break;
                                 case ADD_FRIEND:
+                                    // adds a new friend
                                     boolean resultAddFriend = Server.userDatabase.addFriend(usernameOne, usernameTwo);
                                     if (resultAddFriend) {
                                         out.write(usernameTwo + " added!");
@@ -180,6 +191,7 @@ public class Server implements ServerInterface {
                                     Server.userDatabase.readDatabase();
                                     break;
                                 case REMOVE_FRIEND:
+                                    // removes an existing friend
                                     boolean resultRemoveFriend =
                                             Server.userDatabase.removeFriend(usernameOne, usernameTwo);
                                     if (resultRemoveFriend) {
@@ -190,6 +202,7 @@ public class Server implements ServerInterface {
                                     Server.userDatabase.readDatabase();
                                     break;
                                 case BLOCK:
+                                    //blocks a user
                                     boolean resultBlock = Server.userDatabase.block(usernameOne, usernameTwo);
                                     if (resultBlock) {
                                         out.write(usernameTwo + " blocked!");
@@ -203,6 +216,7 @@ public class Server implements ServerInterface {
                             inputLine = in.readLine();
                         }
                     } else {
+                        // handles invalid logins
                         out.write("LOGIN ERROR");
                         out.println();
                         out.flush();
@@ -222,7 +236,7 @@ public class Server implements ServerInterface {
             }
         }
     }
-
+// Main method to initialize and start the server
     public static void main(String[] args) {
         MessagesDatabase md = new MessagesDatabase("messagesDatabase.txt", "userDatabase.txt");
         UserDatabase ud = md.getUserDatabase();

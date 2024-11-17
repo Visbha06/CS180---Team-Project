@@ -14,7 +14,7 @@ import static org.junit.Assert.assertTrue;
 public class MessagesDatabaseTest implements MessagesDatabaseTestInterface {
 
     MessagesDatabase md = new MessagesDatabase("messagesTest.txt", "userTest.txt");
-
+// tests readDatabase method
     @Test(timeout = 1000)
     public void readDatabaseTest() {
         boolean readResult = md.readDatabase();
@@ -27,7 +27,7 @@ public class MessagesDatabaseTest implements MessagesDatabaseTestInterface {
         assertEquals("[John45;Ben500]:John45:I've been busy lately.", results.get(2));
         assertEquals("[Ben500;John45]:Ben500:Same here, I have this project to work on.", results.get(3));
     }
-
+//tests writeToDatabase method
     @Test(timeout = 1000)
     public void writeToDatabaseTest() {
         String usernameOne = "John45";
@@ -49,7 +49,7 @@ public class MessagesDatabaseTest implements MessagesDatabaseTestInterface {
         assertEquals("[Ben500;John45]:Ben500:Same here, I have this project to work on.", results.get(3));
         assertEquals("[John45;Ben500]:John45:Yeah same here.", results.get(4));
     }
-
+    //tests findMessages method
     @Test(timeout = 1000)
     public void findMessagesTest() {
         boolean readResult = md.readDatabase();
@@ -65,7 +65,7 @@ public class MessagesDatabaseTest implements MessagesDatabaseTestInterface {
         assertTrue(readResult);
         assertEquals(expected, output.toString());
     }
-
+    //tests deleteMessages method
     @Test(timeout = 1000)
     public void deleteMessagesTest() {
         boolean readResult = md.readDatabase();
@@ -88,7 +88,7 @@ public class MessagesDatabaseTest implements MessagesDatabaseTestInterface {
         assertEquals("[John45;Ben500]:John45:I've been busy lately.", results.get(2));
         assertEquals("[Ben500;John45]:Ben500:Same here, I have this project to work on.", results.get(3));
     }
-
+    //tests messageAllUsers method
     @Test(timeout = 1000)
     public void messageAllUsersTest() {
         boolean readResult = md.readDatabase();
@@ -105,7 +105,7 @@ public class MessagesDatabaseTest implements MessagesDatabaseTestInterface {
 
         assertEquals(expected, output.toString());
     }
-
+    //tests messageOnlyFriends method
     @Test (timeout = 1000)
     public void messageOnlyFriendsTest() {
         boolean result = md.readDatabase();
@@ -121,7 +121,7 @@ public class MessagesDatabaseTest implements MessagesDatabaseTestInterface {
         assertTrue(result);
         assertEquals(expected, actual.toString());
     }
-
+    //tests addMessage method
     @Test(timeout = 1000)
     public void addMessageTest() {
         boolean result = md.readDatabase();
@@ -136,7 +136,7 @@ public class MessagesDatabaseTest implements MessagesDatabaseTestInterface {
         assertEquals("Ben500:Same here, I have this project to work on.", data.get(3));
         assertEquals("Ben500:Test message.", data.get(4));
     }
-
+    //tests getUserData method
     @Test(timeout = 1000)
     public void getUserDataTest() {
         boolean result = md.readDatabase();

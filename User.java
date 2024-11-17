@@ -7,7 +7,7 @@
  */
 
 public class User implements UserInterface {
-
+// sets up username and password fields
     private String username;
     private String password;
 
@@ -15,7 +15,7 @@ public class User implements UserInterface {
         this.username = username;
         this.password = password;
     }
-
+// gets username and password
     public String getUsername() { return username; }
     public String getPassword() { return password; }
 

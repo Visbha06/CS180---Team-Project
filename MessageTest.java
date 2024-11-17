@@ -11,7 +11,7 @@ import static org.junit.Assert.*;
  */
 
 public class MessageTest implements MessageTestInterface {
-
+    //tests the toString method
     @Test(timeout = 1000)
     public void toStringTest() {
         Message newMessage = new Message("VishalB", "Hello!");
@@ -20,7 +20,7 @@ public class MessageTest implements MessageTestInterface {
 
         assertEquals(expected, newMessage.toString());
     }
-
+    //tests the equals method
     @Test(timeout = 1000)
     public void equalsTest() {
         Message message1 = new Message("VishalB", "Hello!");

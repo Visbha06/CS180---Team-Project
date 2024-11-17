@@ -17,7 +17,7 @@ public class ServerTest implements ServerTestInterface {
     MessagesDatabase md = new MessagesDatabase("messagesTest.txt", "userTest.txt");
     UserDatabase ud = md.getUserDatabase();
     Server server = new Server(ud, md);
-
+    //tests LoadUserData method
     @Test(timeout = 1000)
     public void testLoadUserData() {
         ArrayList<String> userData = server.loadUserData();
@@ -31,7 +31,7 @@ public class ServerTest implements ServerTestInterface {
 
         assertEquals(expectedDataString, userDataString);
     }
-
+    //tests LoadMessages method
     @Test(timeout = 1000)
     public void testLoadMessages() {
         ArrayList<String> messagesData = server.loadMessages();

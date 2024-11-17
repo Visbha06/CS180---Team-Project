@@ -11,7 +11,7 @@ import static org.junit.Assert.assertEquals;
  */
 
 public class UserTest implements UserTestInterface {
-
+//tests the getUserNameAndPassword method
     @Test(timeout = 1000)
     public void getUsernameAndPasswordTest() {
         User newUser = new User("VishalB", "ClANuDSHoLEm");
@@ -22,7 +22,7 @@ public class UserTest implements UserTestInterface {
         assertEquals(username, newUser.getUsername());
         assertEquals(password, newUser.getPassword());
     }
-
+    //tests the toString method
     @Test(timeout = 1000)
     public void toStringTest() {
         User newUser = new User("VishalB", "ClANuDSHoLEm");

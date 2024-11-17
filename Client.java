@@ -10,7 +10,7 @@ public class Client implements ClientInterface {
     private BufferedReader in;
     private PrintWriter out;
     private Scanner scanner;
-
+// initializes Client Object
     public Client() {
         scanner = new Scanner(System.in);
     }
@@ -142,7 +142,7 @@ public class Client implements ClientInterface {
             }
         }
     }
-
+// displays all options to the user
     private void displayMenu() {
         System.out.println("\nSelect a command ID:");
         System.out.println("1: Send Message");
@@ -157,7 +157,7 @@ public class Client implements ClientInterface {
         System.out.println("10: Block User");
         System.out.print("Enter command ID: ");
     }
-
+//starts the main method for the client class
     public static void main(String[] args) {
         Client client = new Client();
         client.start();

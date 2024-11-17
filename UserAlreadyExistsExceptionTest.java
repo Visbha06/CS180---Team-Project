@@ -12,7 +12,7 @@ import static org.junit.Assert.assertTrue;
  */
 
 public class UserAlreadyExistsExceptionTest implements UserAlreadyExistsExceptionTestInterface {
-
+    //tests and UserAlreadyExistsException
     @Test
     public void throwsUserAlreadyExistsException() {
         UserDatabase ud = new UserDatabase("userTest.txt");
