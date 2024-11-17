@@ -16,7 +16,7 @@ public enum Action implements ActionInterface {
     Action(int value) {
         this.value = value;
     }
-// Retrieves the integer value associated with the action.
+// Retrieves the integer value associated with the action
     @Override
     public int getValue() {
         return value;
