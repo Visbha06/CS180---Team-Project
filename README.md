@@ -89,14 +89,27 @@ Client and ClientTest
 ##### Brayden:
 Client and the README.
 ##### Vishal:
-Server, ServerTest, Enum Action, and made changes to MessagesDatabase and MessagesDatabaseTest. 
+Server, ServerTest, Action, and made changes to MessagesDatabase and MessagesDatabaseTest. 
 
 ### 2. Class Descriptions
 #### ServerInterface-
 The ServerInterface class contains an outline for the methods in the server class consisting of the start, LoadUserData, and loadMessages methods and also a static final variables representing the port number
+#### ClientInterface-
+
 #### ServerTestInterface-
 The ServerTestInterface contains an outline for the methods designed to test the functionality of the ServerInterface
+#### ClientTestInterface-
+
 #### Server-
 The server class is responsible for handling all the requests inputted by the user in the Client class and returning those results to the user.
 #### Client-
 The client class is responsible for taking user input and sending that input to the server class to execute the requested command. 
+#### ServerTest-
+
+#### ClientTest-
+
+#### ActionInterface-
+
+#### ActionTestInterface-
+
+#### Action-
