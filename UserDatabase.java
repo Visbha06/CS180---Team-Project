@@ -111,6 +111,18 @@ public class UserDatabase extends Thread implements UserDatabaseInterface {
         }
     }
 
+    public String findUserAndPassword(String username) {
+        synchronized (gateKeeper) {
+            for (String user : userData) {
+                String[] piece = user.split(",");
+                if (piece[0].equals(username)) {
+                    return piece[0] + " " + piece[1];
+                }
+            }
+            return "NOT_FOUND";
+        }
+    }
+
     public boolean addFriend(String mainUser, String friendRequest) {
         synchronized (gateKeeper) {
             for (int i = 0; i < userData.size(); i++) {

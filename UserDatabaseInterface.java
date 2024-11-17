@@ -13,6 +13,7 @@ public interface UserDatabaseInterface {
     boolean checkUsernameAndPassword(String username, String password);
     boolean createNewUser(String username, String password) throws PasswordException, UserAlreadyExistsException;
     String findUser(String username);
+    String findUserAndPassword(String username);
     boolean addFriend(String mainUser, String friendRequest);
     boolean removeFriend( String mainUser, String friend);
     boolean block(String mainUser, String blockedUser);

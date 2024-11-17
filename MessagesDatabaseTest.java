@@ -8,7 +8,7 @@ import static org.junit.Assert.assertTrue;
  * Test cases for the MessagesDatabase class
  *
  * @author Vishal Bhat -- Section L25
- * @version 2 November 2024
+ * @version 17 November 2024
  */
 
 public class MessagesDatabaseTest implements MessagesDatabaseTestInterface {
@@ -22,19 +22,20 @@ public class MessagesDatabaseTest implements MessagesDatabaseTestInterface {
 
         assertTrue(readResult);
 
-        assertEquals("John45:Hey! How's your day been?", results.get(0));
-        assertEquals("Ben500:Been good, hbu?", results.get(1));
-        assertEquals("John45:I've been busy lately.", results.get(2));
-        assertEquals("Ben500:Same here, I have this project to work on.", results.get(3));
+        assertEquals("[John45;Ben500]:John45:Hey! How's your day been?", results.get(0));
+        assertEquals("[Ben500;John45]:Ben500:Been good, hbu?", results.get(1));
+        assertEquals("[John45;Ben500]:John45:I've been busy lately.", results.get(2));
+        assertEquals("[Ben500;John45]:Ben500:Same here, I have this project to work on.", results.get(3));
     }
 
     @Test(timeout = 1000)
     public void writeToDatabaseTest() {
-        String username = "John45";
+        String usernameOne = "John45";
+        String usernameTwo = "Ben500";
         String message = "Yeah same here.";
 
         md.readDatabase();
-        md.addMessage(username, message);
+        md.addMessage(usernameOne, usernameTwo, message);
         boolean writeResult = md.writeToDatabase();
         boolean readResult = md.readDatabase();
         var results = md.getUserData();
@@ -42,11 +43,11 @@ public class MessagesDatabaseTest implements MessagesDatabaseTestInterface {
         assertTrue(writeResult);
         assertTrue(readResult);
 
-        assertEquals("John45:Hey! How's your day been?", results.get(0));
-        assertEquals("Ben500:Been good, hbu?", results.get(1));
-        assertEquals("John45:I've been busy lately.", results.get(2));
-        assertEquals("Ben500:Same here, I have this project to work on.", results.get(3));
-        assertEquals("John45:Yeah same here.", results.get(4));
+        assertEquals("[John45;Ben500]:John45:Hey! How's your day been?", results.get(0));
+        assertEquals("[Ben500;John45]:Ben500:Been good, hbu?", results.get(1));
+        assertEquals("[John45;Ben500]:John45:I've been busy lately.", results.get(2));
+        assertEquals("[Ben500;John45]:Ben500:Same here, I have this project to work on.", results.get(3));
+        assertEquals("[John45;Ben500]:John45:Yeah same here.", results.get(4));
     }
 
     @Test(timeout = 1000)
@@ -68,7 +69,13 @@ public class MessagesDatabaseTest implements MessagesDatabaseTestInterface {
     @Test(timeout = 1000)
     public void deleteMessagesTest() {
         boolean readResult = md.readDatabase();
-        boolean deleteResult = md.deleteMessage("John45", "Yeah same here.");
+
+        User userOne = new User("John45", "ilikecats500");
+        User userTwo = new User("Ben500", "abcdefg");
+
+        Chat chat = new Chat(userOne, userTwo);
+
+        boolean deleteResult = md.deleteMessage(chat, "John45", "Yeah same here.");
         var results = md.getUserData();
         boolean writeResult = md.writeToDatabase();
 
@@ -76,10 +83,10 @@ public class MessagesDatabaseTest implements MessagesDatabaseTestInterface {
         assertTrue(deleteResult);
         assertTrue(writeResult);
 
-        assertEquals("John45:Hey! How's your day been?", results.get(0));
-        assertEquals("Ben500:Been good, hbu?", results.get(1));
-        assertEquals("John45:I've been busy lately.", results.get(2));
-        assertEquals("Ben500:Same here, I have this project to work on.", results.get(3));
+        assertEquals("[John45;Ben500]:John45:Hey! How's your day been?", results.get(0));
+        assertEquals("[Ben500;John45]:Ben500:Been good, hbu?", results.get(1));
+        assertEquals("[John45;Ben500]:John45:I've been busy lately.", results.get(2));
+        assertEquals("[Ben500;John45]:Ben500:Same here, I have this project to work on.", results.get(3));
     }
 
     @Test(timeout = 1000)
@@ -118,7 +125,7 @@ public class MessagesDatabaseTest implements MessagesDatabaseTestInterface {
     @Test(timeout = 1000)
     public void addMessageTest() {
         boolean result = md.readDatabase();
-        md.addMessage("Ben500", "Test message.");
+        md.addMessage("Ben500", "John45", "Test message.");
 
         var data = md.getUserData();
 

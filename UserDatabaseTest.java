@@ -1,9 +1,8 @@
 import java.util.ArrayList;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import org.junit.Test;
-import static org.junit.Assert.assertFalse;
+
+import static org.junit.Assert.*;
 
 /**
  * UserDatabaseTest.java
@@ -77,8 +76,11 @@ public class UserDatabaseTest implements UserDatabaseTestInterface {
         UserDatabase db = new UserDatabase("testRead.txt");
         db.readDatabase();
 
-        assertTrue(db.findUser("James34"));
-        assertFalse(db.findUser("nonExistentUser"));
+        String userOne = "James34";
+        String userTwo = "nonExistentUser";
+
+        assertEquals("James34", db.findUser(userOne));
+        assertNotEquals("NOT_FOUND", db.findUser(userTwo));
     }
 
     @Test(timeout = 1000)

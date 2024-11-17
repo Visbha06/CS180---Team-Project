@@ -71,7 +71,8 @@ public class MessagesDatabase extends Thread implements MessageDatabaseInterface
             //goes through the userData list and finds messages with the username String
             for (int i = 0; i < userData.size(); i++) {
                 if (userData.get(i).contains(username)) {
-                    foundMessages.add(userData.get(i));
+                    String message = userData.get(i).split(":", 2)[1];
+                    foundMessages.add(message);
                 }
             }
             return foundMessages;
@@ -79,12 +80,29 @@ public class MessagesDatabase extends Thread implements MessageDatabaseInterface
 
     }
 
-    public boolean deleteMessage(String username, String message) {
+    public boolean deleteMessage(Chat chat, String username, String message) {
         int originalSize = userData.size();
         synchronized (gateKeeper) {
             //goes through userData and removes the message from the txt file
             for (int i = 0; i < userData.size(); i++) {
-                if (userData.get(i).contains(username) && userData.get(i).contains(message)) {
+                String chatString = userData.get(i).split(":")[0];
+                int semicolonIndex = chatString.indexOf(";");
+                String usernameOne = chatString.substring(semicolonIndex - 1, semicolonIndex);
+                String usernameTwo = chatString.substring(semicolonIndex + 1, semicolonIndex + 2);
+
+                String dataUserOne = userDatabase.findUserAndPassword(usernameOne);
+                String dataUserTwo = userDatabase.findUserAndPassword(usernameTwo);
+
+                String passwordOne = dataUserOne.split(" ")[1];
+                String passwordTwo = dataUserTwo.split(" ")[1];
+
+                User userOne = new User(usernameOne, passwordOne);
+                User userTwo = new User(usernameTwo, passwordTwo);
+
+                Chat compareChat = new Chat(userOne, userTwo);
+
+                if (chat.equals(compareChat) && userData.get(i).contains(username) &&
+                        userData.get(i).contains(message)) {
                     userData.remove(i);
                     break;
                 }
@@ -168,8 +186,8 @@ public class MessagesDatabase extends Thread implements MessageDatabaseInterface
         return userData;
     }
 
-    public String getFilePath() {
-        return filePath;
+    public UserDatabase getUserDatabase() {
+        return userDatabase;
     }
 
 }

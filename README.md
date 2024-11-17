@@ -85,7 +85,7 @@ The userAlreadyExists exception is a custom exception that is meant to be thrown
 ##### Rylee:
 ServerInterface, ClientInterface, ServerTestInterface, ActionInterface, ActionTestInterface, made changes to Class Chat and ChatInterface, and the README.
 ##### Sathvik:
-Client and ClientTest
+Client
 ##### Brayden:
 Client and the README.
 ##### Vishal:
