@@ -81,6 +81,17 @@ The passwordException class is a custom exception that is meant to be thrown whe
 #### UserAlreadyExistsException-
 The userAlreadyExists exception is a custom exception that is meant to be thrown when a user attempts to create a username that has already been created. There is a testing class for this exception that ensures that this exception is thrown in the correct scenarios.
 ## Phase 2
+### 1. Who Submitted What
+##### Rylee:
+ServerInterface, ClientInterface, ServerTestInterface, ActionInterface, ActionTestInterface, made changes to Class Chat and ChatInterface, and the README.
+##### Sathvik:
+Client and ClientTest
+##### Brayden:
+Client and the README.
+##### Vishal:
+Server, ServerTest, Enum Action, and made changes to MessagesDatabase and MessagesDatabaseTest. 
+
+### 2. Class Descriptions
 #### ServerInterface-
 The ServerInterface class contains an outline for the methods in the server class consisting of the start, LoadUserData, and loadMessages methods and also a static final variables representing the port number
 #### ServerTestInterface-
