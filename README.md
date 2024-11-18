@@ -82,11 +82,11 @@ The passwordException class is a custom exception that is meant to be thrown whe
 The userAlreadyExists exception is a custom exception that is meant to be thrown when a user attempts to create a username that has already been created. There is a testing class for this exception that ensures that this exception is thrown in the correct scenarios.
 ## Phase 2
 ### 1. How to compile and run
--First compile the server using: javac Server.java
--Secondly run the server using: java Server
--Thirdly compile the client using: javac Client.java
--Fourthly run the client using: java Client
--Make sure to start running the server before the client
+##### -First compile the server using: javac Server.java
+##### -Secondly run the server using: java Server
+##### -Thirdly compile the client using: javac Client.java
+##### -Fourthly run the client using: java Client
+##### -Make sure to start running the server before the client
 ### 2. Who Submitted What
 ##### Rylee:
 ServerInterface, ClientInterface, ServerTestInterface, ActionInterface, ActionTestInterface, made changes to Class Chat and ChatInterface, and the README.
