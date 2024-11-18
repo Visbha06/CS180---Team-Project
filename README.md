@@ -1,6 +1,6 @@
 # CS180---Team-Project
 # --------------------------------
-# Social Media Platform 
+# Social Media Platform
 ## Phase 1
 ### 1. Who Submitted What
 ##### Rylee:
@@ -18,7 +18,7 @@ UserDatabase.java (with Sathvik) + interfaces and tests
 UserInterface.java
 UserTest.java + interface
 
-### 2. Class Descriptions 
+### 2. Class Descriptions
 #### Message-
 The purpose of the message class is to create new messages for users. Message class objects take in two parameters user and message. The message class also contains to toString method to format user and message in the format [user: message]
 the class also contains an equals method to check if two messages are the same and sent by the same user. This class works directly with the messagesDataBase class.
@@ -38,12 +38,12 @@ The chatTest class contains the tests for chatClass and tests that the equals me
 #### ChatTestInterface-
 Contains the outline for the chatTest class equals test.
 #### User-
-The purpose of the user class is the creation of new User objects via the creation of a userName and password. 
+The purpose of the user class is the creation of new User objects via the creation of a userName and password.
 #### UserAlreadyExistsExceptionTest-
 The userAlreadyExistsExceptionTest class is dedicated to testing the exception that is thrown when a newUser object is created with the same userName as another user.
 #### UserDatabase-
-The purpose of the userDataBase class is storing and editing the file containing the information of all the users. Including username, password, friends, and blocked users. This class implements the userDataBaseInterface which provides an outline for the class. 
-Some methods in the class can read/write to the database(text file). Other ones are checkUserNameAndPassword, createNewUser, findUser, addFriend, removeFriend, and block. All of which manipulate the userDatabase in different ways. 
+The purpose of the userDataBase class is storing and editing the file containing the information of all the users. Including username, password, friends, and blocked users. This class implements the userDataBaseInterface which provides an outline for the class.
+Some methods in the class can read/write to the database(text file). Other ones are checkUserNameAndPassword, createNewUser, findUser, addFriend, removeFriend, and block. All of which manipulate the userDatabase in different ways.
 #### UserDatabaseTest-
 The UserDataBaseTest class has multiple test cases for all the methods in the userDataBase class to ensure that every condition that the userDatabase could encounter is accounted for and works accordingly.
 #### UserTest-
@@ -58,7 +58,7 @@ The messageDatabaseInterface contains an outline for all the methods in the mess
 The messageInterface class contains an outline for all the methods in the Message class.
 #### MessagesDataBaseTestInterface-
 The MessagesDataBaseTestInterface contains the method signatures for all the methods in the MessagesDatabaseTest.
-#### MessageTestInterface- 
+#### MessageTestInterface-
 The MessageTestInterface contains an outline for the methods present in the MessageTest class with makes sure the methods in the message class work correctly.
 #### PasswordExceptionInterface-
 The passwordExceptionInterface contains an outline for the passwordException exception.
@@ -81,7 +81,13 @@ The passwordException class is a custom exception that is meant to be thrown whe
 #### UserAlreadyExistsException-
 The userAlreadyExists exception is a custom exception that is meant to be thrown when a user attempts to create a username that has already been created. There is a testing class for this exception that ensures that this exception is thrown in the correct scenarios.
 ## Phase 2
-### 1. Who Submitted What
+### 1. How to compile and run
+-First compile the server using: javac Server.java
+-Secondly run the server using: java Server
+-Thirdly compile the client using: javac Client.java
+-Fourthly run the client using: java Client
+-Make sure to start running the server before the client
+### 2. Who Submitted What
 ##### Rylee:
 ServerInterface, ClientInterface, ServerTestInterface, ActionInterface, ActionTestInterface, made changes to Class Chat and ChatInterface, and the README.
 ##### Sathvik:
@@ -89,25 +95,21 @@ Client
 ##### Brayden:
 Client, Server, and README.
 ##### Vishal:
-Server, ServerTest, Action, and made changes to MessagesDatabase and MessagesDatabaseTest. 
+Server, ServerTest, Action, and made changes to MessagesDatabase and MessagesDatabaseTest.
 
-### 2. Class Descriptions
+### 3. Class Descriptions
 #### ServerInterface-
 The ServerInterface class contains an outline for the methods in the server class consisting of the start, LoadUserData, and loadMessages methods and also a static final variables representing the port number
 #### ClientInterface-
 The client interface contains an outline for the methods and functionality in the client class.
 #### ServerTestInterface-
 The ServerTestInterface contains an outline for the methods designed to test the functionality of the ServerInterface
-#### ClientTestInterface-
-
 #### Server-
 The server class is responsible for handling all the requests inputted by the user in the Client class and returning those results to the user.
 #### Client-
-The client class is responsible for taking user input and sending that input to the server class to execute the requested command. 
+The client class is responsible for taking user input and sending that input to the server class to execute the requested command.
 #### ServerTest-
 The purpose of the server test class is to make sure the client is to make sure that it is loading the correct user data and message data. This is to ensure that the server is able to send the correct data back to the client.
-#### ClientTest-
-
 #### ActionInterface-
 The action interface outlines the get value function in the action enum which returns and integer value based on what command is selected.
 #### ActionTestInterface-
