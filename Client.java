@@ -5,7 +5,7 @@ import java.util.Scanner;
 public class Client implements ClientInterface {
 
     private static final String SERVER_ADDRESS = "localhost";
-    private static final int SERVER_PORT = 12345;
+    private static final int SERVER_PORT = 1234;
     private Socket socket;
     private BufferedReader in;
     private PrintWriter out;

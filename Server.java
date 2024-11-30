@@ -16,7 +16,7 @@ public class Server implements ServerInterface {
     private static MessagesDatabase messagesDatabase;
     private static ArrayList<String> userData;
     private static ArrayList<String> messageData;
-// constructs Server Object
+    // constructs Server Object
     public Server(UserDatabase userDatabase, MessagesDatabase messagesDatabase) {
         Server.userDatabase = userDatabase;
         Server.messagesDatabase = messagesDatabase;
