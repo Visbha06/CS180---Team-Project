@@ -61,10 +61,12 @@ public class GUIClient extends JComponent implements Runnable {
     public void run() {
         int reply = JOptionPane.NO_OPTION;
         do {
+
             String username = JOptionPane.showInputDialog(null, "Please enter your username", TITLE,
                     JOptionPane.QUESTION_MESSAGE);
             String password = JOptionPane.showInputDialog(null, "Please enter your password", TITLE,
                     JOptionPane.INFORMATION_MESSAGE);
+
 
             out.write(username + ":" + password);
             out.println();
@@ -78,8 +80,31 @@ public class GUIClient extends JComponent implements Runnable {
             }
 
             if (!response.equals("LOGIN ERROR")) {
-                createGUI();
+                //After successful login, request the list of users from the server
+                out.write("LIST_USERS");
+                out.println();
+                out.flush();
+
+                try {
+                    // Receive the list of users from the server and display in a JOptionPane
+                    String userList = in.readLine();
+                    String[] users = userList.split(",");
+                    String userTwo = (String) JOptionPane.showInputDialog(null,
+                            "Select a user to chat with:",
+                            TITLE,
+                            JOptionPane.PLAIN_MESSAGE,
+                            null,
+                            users,
+                            users[0]);
+
+                    if (userTwo != null) {
+                        createGUI(username, userTwo);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             } else {
+
                 JOptionPane.showMessageDialog(null, "Login failed", TITLE, JOptionPane.ERROR_MESSAGE);
                 reply = JOptionPane.showConfirmDialog(null, "Do you want to try again?", TITLE,
                         JOptionPane.YES_NO_OPTION);
@@ -87,26 +112,53 @@ public class GUIClient extends JComponent implements Runnable {
         } while (reply == JOptionPane.YES_OPTION);
     }
 
-    private void createGUI() {
+    private void createGUI(String userOne, String userTwo) {
         JFrame frame = new JFrame(TITLE);
+
 
         textField = new JTextField();
         textField.addActionListener(actionListener);
-        enterBtn = new JButton();
+
+        //Set up the button to send messages
+        enterBtn = new JButton("Send");
         enterBtn.addActionListener(actionListener);
+
+
         searchField = new JTextField();
         searchField.addActionListener(actionListener);
-        msgToggle = new JButton();
+
+        // Set up the button for search functionality
+        msgToggle = new JButton("Search");
         msgToggle.addActionListener(actionListener);
 
+        // Added an ActionListener to handle button clicks and communication
+        actionListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (e.getSource() == enterBtn) {
+                    //Send message in the format ID:1:userOne:userTwo:Message
+                    String message = textField.getText();
+                    if (!message.isEmpty()) {
+                        out.write("1:" + userOne + ":" + userTwo + ":" + message);
+                        out.println();
+                        out.flush();
+                    }
+                } else if (e.getSource() == msgToggle) {
+                    //Send search query in the format ID:2:userOne:NONE:SearchQuery
+                    String searchQuery = searchField.getText();
+                    if (!searchQuery.isEmpty()) {
+                        out.write("2:" + userOne + ":NONE:" + searchQuery);
+                        out.println();
+                        out.flush();
+                    }
+                }
+            }
+        };
+
+        //GUI frame remains minimal since chat selection is handled through JOptionPane
         frame.setSize(600, 400);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setVisible(true);
     }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new GUIClient());
-    }
-
 }

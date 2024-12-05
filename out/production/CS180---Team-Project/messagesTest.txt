@@ -1,4 +1,4 @@
-John45:Hey! How's your day been?
-Ben500:Been good, hbu?
-John45:I've been busy lately.
-Ben500:Same here, I have this project to work on.
+[John45;Ben500]:John45:Hey! How's your day been?
+[Ben500;John45]:Ben500:Been good, hbu?
+[John45;Ben500]:John45:I've been busy lately.
+[Ben500;John45]:Ben500:Same here, I have this project to work on.
