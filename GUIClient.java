@@ -153,7 +153,6 @@ public class GUIClient extends JComponent implements Runnable, GUIClientInterfac
                     out.write("5:" + userOne + ":NONE:-");
                     out.println();
                     out.flush();
-
                     try {
                         String userList = in.readLine();
                         String[] users = userList.split(",");
