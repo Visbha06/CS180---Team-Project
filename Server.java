@@ -211,6 +211,19 @@ public class Server implements ServerInterface {
                                     }
                                     Server.userDatabase.readDatabase();
                                     break;
+                                case LOAD:
+                                    String loadPasswordOne = Server.userDatabase.findUserAndPassword(usernameOne)
+                                            .split(" ")[1];
+                                    String loadPasswordTwo = Server.userDatabase.findUserAndPassword(usernameTwo)
+                                            .split(" ")[1];
+                                    Chat loadChat = new Chat(new User(usernameOne, loadPasswordOne),
+                                            new User(usernameTwo, loadPasswordTwo));
+                                    ArrayList<String> loadedMessages = Server.messagesDatabase.loadMessages(loadChat);
+                                    String loadedMessagesString = String.join("     ", loadedMessages);
+                                    out.write(loadedMessagesString);
+                                    out.println();
+                                    out.flush();
+                                    break;
                             }
 
                             inputLine = in.readLine();

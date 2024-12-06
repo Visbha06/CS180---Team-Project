@@ -1,8 +1,10 @@
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 
 /**
  * GUIClient.java
@@ -12,7 +14,7 @@ import java.net.Socket;
  * @version 21 November 2024
  */
 
-public class GUIClient extends JComponent implements Runnable {
+public class GUIClient extends JComponent implements Runnable, GUIClientInterface {
 
     private static final String SERVER_ADDRESS = "localhost";
     private static final int PORT = 1234;
@@ -24,20 +26,10 @@ public class GUIClient extends JComponent implements Runnable {
     private JTextField textField;
     private JButton enterBtn;
     private JTextField searchField;
-    private JButton msgToggle;
-
-    ActionListener actionListener = new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            if (e.getSource() == textField) {
-
-            } else if (e.getSource() == enterBtn) {
-
-            } else if (e.getSource() == searchField) {
-
-            }
-        }
-    };
+    private JButton searchBtn;
+    private JButton allUsers;
+    private JButton friendsOnly;
+    private ArrayList<JLabel> messages;
 
     public GUIClient() {
         try {
@@ -59,9 +51,9 @@ public class GUIClient extends JComponent implements Runnable {
 
     @Override
     public void run() {
-        int reply = JOptionPane.NO_OPTION;
+        int reply;
         do {
-
+            reply = JOptionPane.NO_OPTION;
             String username = JOptionPane.showInputDialog(null, "Please enter your username", TITLE,
                     JOptionPane.QUESTION_MESSAGE);
             String password = JOptionPane.showInputDialog(null, "Please enter your password", TITLE,
@@ -81,7 +73,7 @@ public class GUIClient extends JComponent implements Runnable {
 
             if (!response.equals("LOGIN ERROR")) {
                 //After successful login, request the list of users from the server
-                out.write("LIST_USERS");
+                out.write("4:" + username + ":NONE:-");
                 out.println();
                 out.flush();
 
@@ -115,24 +107,8 @@ public class GUIClient extends JComponent implements Runnable {
     private void createGUI(String userOne, String userTwo) {
         JFrame frame = new JFrame(TITLE);
 
-
-        textField = new JTextField();
-        textField.addActionListener(actionListener);
-
-        //Set up the button to send messages
-        enterBtn = new JButton("Send");
-        enterBtn.addActionListener(actionListener);
-
-
-        searchField = new JTextField();
-        searchField.addActionListener(actionListener);
-
-        // Set up the button for search functionality
-        msgToggle = new JButton("Search");
-        msgToggle.addActionListener(actionListener);
-
         // Added an ActionListener to handle button clicks and communication
-        actionListener = new ActionListener() {
+        ActionListener actionListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (e.getSource() == enterBtn) {
@@ -143,7 +119,7 @@ public class GUIClient extends JComponent implements Runnable {
                         out.println();
                         out.flush();
                     }
-                } else if (e.getSource() == msgToggle) {
+                } else if (e.getSource() == searchBtn) {
                     //Send search query in the format ID:2:userOne:NONE:SearchQuery
                     String searchQuery = searchField.getText();
                     if (!searchQuery.isEmpty()) {
@@ -151,14 +127,105 @@ public class GUIClient extends JComponent implements Runnable {
                         out.println();
                         out.flush();
                     }
+                } else if (e.getSource() == allUsers) {
+                    out.write("4:" + userOne + ":NONE" + "-");
+                    out.println();
+                    out.flush();
+
+                    try {
+                        String userList = in.readLine();
+                        String[] users = userList.split(",");
+                        String chosenUser = (String) JOptionPane.showInputDialog(null,
+                                "Select a user to chat with:",
+                                TITLE,
+                                JOptionPane.PLAIN_MESSAGE,
+                                null,
+                                users,
+                                users[0]);
+
+                        if (chosenUser != null) {
+                            updateGUI(frame, userOne, chosenUser);
+                        }
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
+                } else if (e.getSource() == friendsOnly) {
+                    out.write("5:" + userOne + ":NONE:-");
+                    out.println();
+                    out.flush();
+
+                    try {
+                        String userList = in.readLine();
+                        String[] users = userList.split(",");
+                        if (users.length == 0) {
+                            JOptionPane.showMessageDialog(null, "You have no friends!", TITLE,
+                                    JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+                        String chosenUser = (String) JOptionPane.showInputDialog(null,
+                                "Select a user to chat with:",
+                                TITLE,
+                                JOptionPane.PLAIN_MESSAGE,
+                                null,
+                                users,
+                                users[0]);
+
+                        if (chosenUser != null) {
+                            updateGUI(frame, userOne, chosenUser);
+                        }
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
                 }
             }
         };
+
+        messages = new ArrayList<>();
+        String loadedMessages = "";
+        out.write("11:" + userOne + ":" + userTwo + ":-");
+        out.println();
+        out.flush();
+
+        try {
+            loadedMessages = in.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String[] messagesArr = loadedMessages.split(" {5}");
+
+        for (int i = 0; i < messagesArr.length; i++) {
+            messages.set(i, new JLabel(messagesArr[i]));
+        }
+
+        textField = new JTextField();
+        textField.addActionListener(actionListener);
+
+        //Set up the button to send messages
+        enterBtn = new JButton("Send");
+        enterBtn.addActionListener(actionListener);
+
+        searchField = new JTextField();
+        searchField.addActionListener(actionListener);
+
+        // Set up the button for search functionality
+        searchBtn = new JButton("Search");
+        searchBtn.addActionListener(actionListener);
+
+        allUsers = new JButton("All Users");
+        allUsers.addActionListener(actionListener);
+
+        friendsOnly = new JButton("Friends");
+        friendsOnly.addActionListener(actionListener);
 
         //GUI frame remains minimal since chat selection is handled through JOptionPane
         frame.setSize(600, 400);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setVisible(true);
+    }
+
+    private void updateGUI(JFrame frame, String userOne, String userTwo) {
+
     }
 }

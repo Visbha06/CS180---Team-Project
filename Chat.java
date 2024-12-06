@@ -28,5 +28,9 @@ public class Chat implements ChatInterface {
     public String toString() {
             return String.format("[%s;%s]", userOne.getUsername(), userTwo.getUsername());
     }
+
+    public Chat alternateChat() {
+        return new Chat(userTwo, userOne);
+    }
 }
 

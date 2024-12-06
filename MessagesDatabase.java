@@ -1,3 +1,4 @@
+import javax.print.CancelablePrintJob;
 import java.util.ArrayList;
 import java.io.*;
 
@@ -78,6 +79,23 @@ public class MessagesDatabase extends Thread implements MessageDatabaseInterface
             return foundMessages;
         }
 
+    }
+// Load messages into a chat
+    public ArrayList<String> loadMessages(Chat chat) {
+        synchronized (gateKeeper) {
+            ArrayList<String> messages = new ArrayList<>();
+
+            Chat alternateChat = chat.alternateChat();
+
+            for (int i = 0; i < userData.size(); i++) {
+                String currMessage = userData.get(i);
+                if (currMessage.contains(chat.toString()) || currMessage.contains(alternateChat.toString())) {
+                    messages.add(userData.get(i).substring(currMessage.indexOf("]") + 2));
+                }
+            }
+
+            return messages;
+        }
     }
 // delete a specific message from a user
     public boolean deleteMessage(Chat chat, String username, String message) {
