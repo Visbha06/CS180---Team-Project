@@ -116,3 +116,7 @@ The action interface outlines the get value function in the action enum which re
 The action test interface outlines the test cases for the actionTest class.
 #### Action-
 The action class is a enum that is used for handling user input and processing user input with the given value. It's utilized in the server class for when the user is selecting what action they would like to perform.
+## Phase 3
+### 1. How to compile and run
+### 2. Who submitted what 
+### Class Descriptions
