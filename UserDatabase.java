@@ -173,7 +173,7 @@ public class UserDatabase extends Thread implements UserDatabaseInterface {
 
                     for (String friendItem : friends) {
                         if (!friendItem.equals(friend)) {
-                            if (updatedFriends.length() > 0) {
+                            if (!updatedFriends.isEmpty()) {
                                 updatedFriends.append(";");
                             }
                             updatedFriends.append(friendItem);

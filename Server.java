@@ -133,9 +133,11 @@ public class Server implements ServerInterface {
                                             Server.messagesDatabase.deleteMessage(chat, usernameOne, message);
                                     if (resultDelete) {
                                         out.write("Message deleted");
-                                        out.println();
-                                        out.flush();
+                                    } else {
+                                        out.write("ERROR");
                                     }
+                                    out.println();
+                                    out.flush();
                                     break;
                                 case ALL_USERS:
                                     //sends message to all users
@@ -185,9 +187,11 @@ public class Server implements ServerInterface {
                                     boolean resultAddFriend = Server.userDatabase.addFriend(usernameOne, usernameTwo);
                                     if (resultAddFriend) {
                                         out.write(usernameTwo + " added!");
-                                        out.println();
-                                        out.flush();
+                                    } else {
+                                        out.write("ERROR");
                                     }
+                                    out.println();
+                                    out.flush();
                                     Server.userDatabase.readDatabase();
                                     break;
                                 case REMOVE_FRIEND:
@@ -196,9 +200,11 @@ public class Server implements ServerInterface {
                                             Server.userDatabase.removeFriend(usernameOne, usernameTwo);
                                     if (resultRemoveFriend) {
                                         out.write(usernameTwo + " removed!");
-                                        out.println();
-                                        out.flush();
+                                    } else {
+                                        out.write("ERROR");
                                     }
+                                    out.println();
+                                    out.flush();
                                     Server.userDatabase.readDatabase();
                                     break;
                                 case BLOCK:
@@ -206,9 +212,11 @@ public class Server implements ServerInterface {
                                     boolean resultBlock = Server.userDatabase.block(usernameOne, usernameTwo);
                                     if (resultBlock) {
                                         out.write(usernameTwo + " blocked!");
-                                        out.println();
-                                        out.flush();
+                                    } else {
+                                        out.write("ERROR");
                                     }
+                                    out.println();
+                                    out.flush();
                                     Server.userDatabase.readDatabase();
                                     break;
                                 case LOAD:
