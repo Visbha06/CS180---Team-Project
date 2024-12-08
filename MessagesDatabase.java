@@ -1,6 +1,7 @@
 import javax.print.CancelablePrintJob;
 import java.util.ArrayList;
 import java.io.*;
+import java.util.Collections;
 
 /**
  * MessagesDatabase.java
@@ -47,7 +48,8 @@ public class MessagesDatabase extends Thread implements MessageDatabaseInterface
         }
         return true;
     }
-//Writes messages from the `userData` list into the database file.
+
+    //Writes messages from the `userData` list into the database file.
     @Override
     public boolean writeToDatabase() {
         synchronized (gateKeeper) {
@@ -63,7 +65,8 @@ public class MessagesDatabase extends Thread implements MessageDatabaseInterface
         }
         return true;
     }
-//finds all messages from a user
+
+    //finds all messages from a user
     public ArrayList<String> findMessages(String username, String message) {
         synchronized (gateKeeper) {
             //stores all the messages by a certain username arrayList
@@ -80,7 +83,8 @@ public class MessagesDatabase extends Thread implements MessageDatabaseInterface
         }
 
     }
-// Load messages into a chat
+
+    // Load messages into a chat
     public ArrayList<String> loadMessages(Chat chat) {
         synchronized (gateKeeper) {
             ArrayList<String> messages = new ArrayList<>();
@@ -97,7 +101,8 @@ public class MessagesDatabase extends Thread implements MessageDatabaseInterface
             return messages;
         }
     }
-// delete a specific message from a user
+
+    // delete a specific message from a user
     public boolean deleteMessage(Chat chat, String username, String message) {
         int originalSize = userData.size();
         synchronized (gateKeeper) {
@@ -136,11 +141,28 @@ public class MessagesDatabase extends Thread implements MessageDatabaseInterface
         synchronized (gateKeeper) {
             ArrayList<String> userDataCopy = userDatabase.getUserData();
             ArrayList<String> allUsers = new ArrayList<>();
+            ArrayList<String> blockedUsers = new ArrayList<>();
+            for (int i = 0; i < userDataCopy.size(); i++) {
+                if (userDataCopy.get(i).split(",")[0].equals(username)) {
+                    String[] pieces = userDataCopy.get(i).split(",");
+                    String blockedUsersString = pieces[3];
+                    blockedUsersString = blockedUsersString.replace("[", "")
+                            .replace("]", "");
+                    String[] blockedUsersArr;
+                    if (!blockedUsersString.isEmpty()) {
+                        blockedUsersArr = blockedUsersString.split(";");
+                    } else {
+                        blockedUsersArr = new String[0];
+                    }
+                    Collections.addAll(blockedUsers, blockedUsersArr);
+                    break;
+                }
+            }
 
             for (int i = 0; i < userDataCopy.size(); ) {
                 String user = userDataCopy.get(i).split(",")[0];
                 userDataCopy.set(i, user);
-                if (user.contains(username)) {
+                if (user.contains(username) || blockedUsers.contains(user)) {
                     userDataCopy.remove(i);
                 } else {
                     i++;
@@ -151,7 +173,8 @@ public class MessagesDatabase extends Thread implements MessageDatabaseInterface
             return allUsers;
         }
     }
-//find messages from friends only
+
+    //find messages from friends only
     public ArrayList<String> messageOnlyFriends(String username) {
         synchronized (gateKeeper) {
             ArrayList<String> friendsOnly = new ArrayList<>();
@@ -170,7 +193,7 @@ public class MessagesDatabase extends Thread implements MessageDatabaseInterface
                 if (newUserName.equals(username)) {
                     String friendsData = friendsSplitData.replace("[", "").replace("]", "");
                     if (!friendsData.contains(","))
-                        friends = new String[] { friendsData };
+                        friends = new String[]{friendsData};
                     else
                         friends = friendsData.split(",");
                     break;
@@ -179,21 +202,26 @@ public class MessagesDatabase extends Thread implements MessageDatabaseInterface
             }
 
             StringBuilder foundFriends = new StringBuilder();
-            for (int i = 0; i < userData.size(); i++) {
+            boolean found;
+            for (int i = 0; i < newUserData.size(); i++) {
+                found = newUserData.get(i).split(",")[0].equals(username);
                 for (int j = 0; j < friends.length; j++) {
-                    if (userData.get(i).contains(friends[j]) && !foundFriends.toString().contains(friends[j])) {
-                        String friendName = userData.get(i).split(":")[0];
+                    if (newUserData.get(i).contains(friends[j]) && !foundFriends.toString().contains(friends[j])) {
+                        String friendName = friends[j];
                         foundFriends.append(friendName).append(",");
                         friendsOnly.add(friendName);
                         break;
                     }
                 }
+                if (found)
+                    break;
             }
 
             return friendsOnly;
         }
     }
-// adds a message and adds it into the database
+
+    // adds a message and adds it into the database
     public void addMessage(String usernameOne, String usernameTwo, String message) {
         synchronized (gateKeeper) {
             String line = String.format("[%s;%s]:%s:%s", usernameOne, usernameTwo, usernameOne, message);
@@ -201,11 +229,13 @@ public class MessagesDatabase extends Thread implements MessageDatabaseInterface
             this.writeToDatabase();
         }
     }
-//returns userData
+
+    //returns userData
     public ArrayList<String> getUserData() {
         return userData;
     }
-//returns userDatabase
+
+    //returns userDatabase
     public UserDatabase getUserDatabase() {
         return userDatabase;
     }

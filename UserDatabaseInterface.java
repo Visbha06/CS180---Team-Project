@@ -10,6 +10,7 @@ public interface UserDatabaseInterface {
 
     boolean readDatabase();
     boolean writeToDatabase();
+    boolean updateDatabase();
     boolean checkUsernameAndPassword(String username, String password);
     boolean createNewUser(String username, String password) throws PasswordException, UserAlreadyExistsException;
     String findUser(String username);

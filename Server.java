@@ -190,7 +190,6 @@ public class Server extends Thread implements ServerInterface {
                                 }
                                 out.println();
                                 out.flush();
-//                                Server.userDatabase.readDatabase();
                                 break;
                             case REMOVE_FRIEND:
                                 // removes an existing friend
@@ -203,7 +202,6 @@ public class Server extends Thread implements ServerInterface {
                                 }
                                 out.println();
                                 out.flush();
-//                                Server.userDatabase.readDatabase();
                                 break;
                             case BLOCK:
                                 //blocks a user
@@ -215,7 +213,6 @@ public class Server extends Thread implements ServerInterface {
                                 }
                                 out.println();
                                 out.flush();
-                                Server.userDatabase.readDatabase();
                                 break;
                             case LOAD:
                                 System.out.println(Server.userDatabase.findUserAndPassword(usernameOne));

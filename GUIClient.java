@@ -21,7 +21,6 @@ public class GUIClient extends JComponent implements Runnable, GUIClientInterfac
     private Socket socket;
     private BufferedReader in;
     private PrintWriter out;
-    private boolean running = true;
 
     private String userOne;
     private String userTwo;
@@ -339,7 +338,7 @@ public class GUIClient extends JComponent implements Runnable, GUIClientInterfac
         enterBtn = new JButton("Send");
         enterBtn.addActionListener(actionListener);
 
-        searchField = new JTextField(20);
+        searchField = new JTextField(18);
         searchField.addActionListener(actionListener);
 
         // Set up the button for search functionality
@@ -504,7 +503,6 @@ public class GUIClient extends JComponent implements Runnable, GUIClientInterfac
 
     private void shutdown() {
         try {
-            running = false;
             if (in != null) in.close();
             if (out != null) out.close();
             if (socket != null) socket.close();

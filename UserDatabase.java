@@ -23,7 +23,6 @@ public class UserDatabase extends Thread implements UserDatabaseInterface {
         this.userData = new ArrayList<>();
         this.newUserData = new ArrayList<>();
         this.filePath = filePath;
-
     }
 // reads data from the database and returns false when no more data can be read
     @Override
@@ -53,6 +52,20 @@ public class UserDatabase extends Thread implements UserDatabaseInterface {
                 }
 
                 bw.flush();
+            } catch (IOException e) {
+                return false;
+            }
+        }
+        return true;
+    }
+    @Override
+    public boolean updateDatabase() {
+        synchronized (gateKeeper) {
+            try (BufferedWriter bw = new BufferedWriter(new FileWriter(filePath, false))) {
+                for (String data : userData) {
+                    bw.write(data);
+                    bw.newLine();
+                }
             } catch (IOException e) {
                 return false;
             }
@@ -127,12 +140,14 @@ public class UserDatabase extends Thread implements UserDatabaseInterface {
 // adds a friend
     public boolean addFriend(String mainUser, String friendRequest) {
         synchronized (gateKeeper) {
+            userData = new ArrayList<>();
+            readDatabase();
             for (int i = 0; i < userData.size(); i++) {
                 String[] piece = userData.get(i).split(",");
                 if (piece[0].equals(mainUser)) {
                     String friendsData = piece[2].replace("[", "").replace("]", "");
                     String[] friends;
-                    if (friendsData.equals("")) {
+                    if (friendsData.isEmpty()) {
                         friends = new String[0];
                     } else {
                         friends = friendsData.split(";");
@@ -150,6 +165,7 @@ public class UserDatabase extends Thread implements UserDatabaseInterface {
                         String updatedFriends = friendsData.isEmpty() ? friendRequest : friendsData + ";" + friendRequest;
                         piece[2] = "[" + updatedFriends + "]";
                         userData.set(i, String.join(",", piece));
+                        updateDatabase();
                         return true;
                     }
                 }
@@ -161,6 +177,8 @@ public class UserDatabase extends Thread implements UserDatabaseInterface {
 // removes a friend
     public boolean removeFriend(String mainUser, String friend) {
         synchronized (gateKeeper) {
+            userData = new ArrayList<>();
+            readDatabase();
             for (int i = 0; i < userData.size(); i++) {
                 String[] piece = userData.get(i).split(",");
                 if (piece[0].equals(mainUser)) {
@@ -184,6 +202,7 @@ public class UserDatabase extends Thread implements UserDatabaseInterface {
 
                     piece[2] = "[" + updatedFriends + "]";
                     userData.set(i, String.join(",", piece));
+                    updateDatabase();
                     return true;
                 }
             }
@@ -193,6 +212,8 @@ public class UserDatabase extends Thread implements UserDatabaseInterface {
 // blocks a user
     public boolean block(String mainUser, String blockedUser) {
         synchronized (gateKeeper) {
+            userData = new ArrayList<>();
+            readDatabase();
             for (int i = 0; i < userData.size(); i++) {
                 String[] piece = userData.get(i).split(",");
                 if (piece[0].equals(mainUser)) {
@@ -220,6 +241,7 @@ public class UserDatabase extends Thread implements UserDatabaseInterface {
                         updatedBlocked += blockedUser;
                         piece[3] = "[" + updatedBlocked + "]";
                         userData.set(i, String.join(",", piece));
+                        updateDatabase();
                         return true;
                     }
                 }
@@ -229,6 +251,8 @@ public class UserDatabase extends Thread implements UserDatabaseInterface {
     }
 // returns userData
     public ArrayList<String> getUserData() {
+        userData = new ArrayList<>();
+        readDatabase();
         return userData;
     }
     // returns NewUserData
@@ -242,10 +266,6 @@ public class UserDatabase extends Thread implements UserDatabaseInterface {
 //sets NewUserData
     public void setNewUserData(ArrayList<String> newUserData) {
         this.newUserData = newUserData;
-    }
-//returns string filePath
-    public String getFilePath() {
-        return filePath;
     }
 
 }
