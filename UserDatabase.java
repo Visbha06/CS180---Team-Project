@@ -16,7 +16,8 @@ public class UserDatabase extends Thread implements UserDatabaseInterface {
     private ArrayList<String> newUserData;
     private final static Object gateKeeper = new Object();
     private String filePath;
-// constructs the UserDatabase Object
+
+    // constructs the UserDatabase Object
     public UserDatabase(String filePath) {
 //        this.username = username;
 //        this.password = password;
@@ -24,7 +25,8 @@ public class UserDatabase extends Thread implements UserDatabaseInterface {
         this.newUserData = new ArrayList<>();
         this.filePath = filePath;
     }
-// reads data from the database and returns false when no more data can be read
+
+    // reads data from the database and returns false when no more data can be read
     @Override
     public boolean readDatabase() {
         synchronized (gateKeeper) {
@@ -41,6 +43,7 @@ public class UserDatabase extends Thread implements UserDatabaseInterface {
 
         return true;
     }
+
     // writes data to the database and returns false when no more data can be written
     @Override
     public boolean writeToDatabase() {
@@ -58,6 +61,7 @@ public class UserDatabase extends Thread implements UserDatabaseInterface {
         }
         return true;
     }
+
     @Override
     public boolean updateDatabase() {
         synchronized (gateKeeper) {
@@ -72,7 +76,8 @@ public class UserDatabase extends Thread implements UserDatabaseInterface {
         }
         return true;
     }
-// returns true if username and password are right
+
+    // returns true if username and password are right
     public boolean checkUsernameAndPassword(String username, String password) {
         synchronized (gateKeeper) {
             for (String user : userData) {
@@ -85,7 +90,8 @@ public class UserDatabase extends Thread implements UserDatabaseInterface {
             return false;
         }
     }
-//checks if password is long enough and makes sure no duplicate usernames are made, also updates the database
+
+    //checks if password is long enough and makes sure no duplicate usernames are made, also updates the database
     public boolean createNewUser(String username, String password) throws PasswordException,
             UserAlreadyExistsException {
         synchronized (gateKeeper) {
@@ -111,7 +117,8 @@ public class UserDatabase extends Thread implements UserDatabaseInterface {
         }
         return true;
     }
-// finds a specific username
+
+    // finds a specific username
     public String findUser(String username) {
         synchronized (gateKeeper) {
             for (String user : userData) {
@@ -123,7 +130,8 @@ public class UserDatabase extends Thread implements UserDatabaseInterface {
             return "NOT_FOUND";
         }
     }
-//finds a user and returns their username and password
+
+    //finds a user and returns their username and password
     public String findUserAndPassword(String username) {
         userData = new ArrayList<>();
         readDatabase();
@@ -137,7 +145,8 @@ public class UserDatabase extends Thread implements UserDatabaseInterface {
             return "NOT_FOUND";
         }
     }
-// adds a friend
+
+    // adds a friend
     public boolean addFriend(String mainUser, String friendRequest) {
         synchronized (gateKeeper) {
             userData = new ArrayList<>();
@@ -174,7 +183,7 @@ public class UserDatabase extends Thread implements UserDatabaseInterface {
         }
     }
 
-// removes a friend
+    // removes a friend
     public boolean removeFriend(String mainUser, String friend) {
         synchronized (gateKeeper) {
             userData = new ArrayList<>();
@@ -209,7 +218,8 @@ public class UserDatabase extends Thread implements UserDatabaseInterface {
             return false;
         }
     }
-// blocks a user
+
+    // blocks a user
     public boolean block(String mainUser, String blockedUser) {
         synchronized (gateKeeper) {
             userData = new ArrayList<>();
@@ -249,21 +259,25 @@ public class UserDatabase extends Thread implements UserDatabaseInterface {
             return false;
         }
     }
-// returns userData
+
+    // returns userData
     public ArrayList<String> getUserData() {
         userData = new ArrayList<>();
         readDatabase();
         return userData;
     }
+
     // returns NewUserData
     public ArrayList<String> getNewUserData() {
         return newUserData;
     }
-// sets UserData
+
+    // sets UserData
     public void setUserData(ArrayList<String> userData) {
         this.userData = userData;
     }
-//sets NewUserData
+
+    //sets NewUserData
     public void setNewUserData(ArrayList<String> newUserData) {
         this.newUserData = newUserData;
     }
