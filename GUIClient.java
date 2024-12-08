@@ -1,12 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.io.*;
 import java.net.Socket;
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * GUIClient.java
@@ -24,11 +21,13 @@ public class GUIClient extends JComponent implements Runnable, GUIClientInterfac
     private Socket socket;
     private BufferedReader in;
     private PrintWriter out;
+    private boolean running = true;
 
     private String userOne;
     private String userTwo;
 
     private JScrollPane centerPane;
+    private JPanel messagePanel;
     private JTextField textField;
     private JButton enterBtn;
     private JTextField searchField;
@@ -38,24 +37,15 @@ public class GUIClient extends JComponent implements Runnable, GUIClientInterfac
     private JButton userOptions;
 
     private ArrayList<JLabel> messages;
+    private String[] messagesArr;
 
     public GUIClient() {
         try {
-            while (true) {
-                socket = new Socket(SERVER_ADDRESS, PORT);
-                in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                out = new PrintWriter(socket.getOutputStream());
-            }
+            socket = new Socket(SERVER_ADDRESS, PORT);
+            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            out = new PrintWriter(socket.getOutputStream());
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                socket.close();
-                in.close();
-                out.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
     }
 
@@ -71,10 +61,13 @@ public class GUIClient extends JComponent implements Runnable, GUIClientInterfac
                     out.println();
                     out.flush();
                 }
+                textField.setText("");
                 SwingUtilities.invokeLater(() -> {
                     JScrollBar verticalBar = centerPane.getVerticalScrollBar();
                     verticalBar.setValue(verticalBar.getMaximum());
                 });
+
+                updateGUI(userOne, userTwo);
             } else if (e.getSource() == searchBtn) {
                 //Send search query in the format ID:2:userOne:NONE:SearchQuery
                 String searchQuery = searchField.getText();
@@ -82,9 +75,30 @@ public class GUIClient extends JComponent implements Runnable, GUIClientInterfac
                     out.write("2:" + userOne + ":NONE:" + searchQuery);
                     out.println();
                     out.flush();
+
+                    try {
+                        String response = in.readLine();
+                        if (!response.isEmpty()) {
+                            String[] searchResults = response.split(" {5}");
+
+                            // Format the search results for display in JOptionPane
+                            StringBuilder formattedResults = new StringBuilder("Search Results:\n\n");
+                            for (String msg : searchResults) {
+                                formattedResults.append("- ").append(msg.trim()).append("\n");
+                            }
+
+                            JOptionPane.showMessageDialog(null, formattedResults.toString(), TITLE,
+                                    JOptionPane.INFORMATION_MESSAGE);
+                        } else {
+                            JOptionPane.showMessageDialog(null, "No search results found.", TITLE, JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
+                    }
                 }
             } else if (e.getSource() == allUsers) {
-                out.write("4:" + userOne + ":NONE" + "-");
+                System.out.println("4:" + userOne + ":NONE:" + "-");
+                out.write("4:" + userOne + ":NONE:" + "-");
                 out.println();
                 out.flush();
 
@@ -100,7 +114,7 @@ public class GUIClient extends JComponent implements Runnable, GUIClientInterfac
                             users[0]);
 
                     if (userTwo != null) {
-                        updateGUI(userOne, userTwo);
+                        SwingUtilities.invokeLater(() -> updateGUI(userOne, userTwo));
                     }
                 } catch (IOException ex) {
                     ex.printStackTrace();
@@ -111,12 +125,12 @@ public class GUIClient extends JComponent implements Runnable, GUIClientInterfac
                 out.flush();
                 try {
                     String userList = in.readLine();
-                    String[] users = userList.split(",");
-                    if (users.length == 0) {
+                    if (userList.isEmpty()) {
                         JOptionPane.showMessageDialog(null, "You have no friends!", TITLE,
                                 JOptionPane.ERROR_MESSAGE);
                         return;
                     }
+                    String[] users = userList.split(",");
                     userTwo = (String) JOptionPane.showInputDialog(null,
                             "Select a user to chat with:",
                             TITLE,
@@ -126,7 +140,7 @@ public class GUIClient extends JComponent implements Runnable, GUIClientInterfac
                             users[0]);
 
                     if (userTwo != null) {
-                        updateGUI(userOne, userTwo);
+                        SwingUtilities.invokeLater(() -> updateGUI(userOne, userTwo));
                     }
                 } catch (IOException ex) {
                     ex.printStackTrace();
@@ -146,67 +160,69 @@ public class GUIClient extends JComponent implements Runnable, GUIClientInterfac
                             null,
                             users,
                             users[0]);
-                    int choice = JOptionPane.showOptionDialog(
-                            null,
-                            "Choose your operation: " + chosenUser,
-                            TITLE,
-                            JOptionPane.YES_NO_CANCEL_OPTION,
-                            JOptionPane.QUESTION_MESSAGE,
-                            null,
-                            options,
-                            options[0]
-                    );
+                    if (chosenUser != null) {
+                        int choice = JOptionPane.showOptionDialog(
+                                null,
+                                "Choose your operation: " + chosenUser,
+                                TITLE,
+                                JOptionPane.YES_NO_CANCEL_OPTION,
+                                JOptionPane.QUESTION_MESSAGE,
+                                null,
+                                options,
+                                options[0]
+                        );
 
-                    switch (choice) {
-                        case 0 -> {
-                            out.write("8:" + userOne + ":" + chosenUser + ":-");
-                            out.println();
-                            out.flush();
-                            try {
-                                String response = in.readLine();
-                                if (!response.equals("ERROR")) {
-                                    JOptionPane.showMessageDialog(null, chosenUser + " added!",
-                                            TITLE, JOptionPane.INFORMATION_MESSAGE);
-                                } else {
-                                    JOptionPane.showMessageDialog(null, "Friend already added!",
-                                            TITLE, JOptionPane.INFORMATION_MESSAGE);
+                        switch (choice) {
+                            case 0 -> {
+                                out.write("8:" + userOne + ":" + chosenUser + ":-");
+                                out.println();
+                                out.flush();
+                                try {
+                                    String response = in.readLine();
+                                    if (!response.equals("ERROR")) {
+                                        JOptionPane.showMessageDialog(null, chosenUser + " added!",
+                                                TITLE, JOptionPane.INFORMATION_MESSAGE);
+                                    } else {
+                                        JOptionPane.showMessageDialog(null, "Friend already added!",
+                                                TITLE, JOptionPane.INFORMATION_MESSAGE);
+                                    }
+                                } catch (IOException ex) {
+                                    ex.printStackTrace();
                                 }
-                            } catch (IOException ex) {
-                                ex.printStackTrace();
                             }
-                        }
-                        case 1 -> {
-                            out.write("9:" + userOne + ":" + chosenUser + ":-");
-                            out.println();
-                            out.flush();
-                            try {
-                                String response = in.readLine();
-                                if (!response.equals("ERROR")) {
-                                    JOptionPane.showMessageDialog(null, chosenUser + " removed!",
-                                            TITLE, JOptionPane.INFORMATION_MESSAGE);
-                                } else {
-                                    JOptionPane.showMessageDialog(null, chosenUser +
-                                            " is not in your friends list!", TITLE, JOptionPane.INFORMATION_MESSAGE);
+                            case 1 -> {
+                                out.write("9:" + userOne + ":" + chosenUser + ":-");
+                                out.println();
+                                out.flush();
+                                try {
+                                    String response = in.readLine();
+                                    if (!response.equals("ERROR")) {
+                                        JOptionPane.showMessageDialog(null, chosenUser + " removed!",
+                                                TITLE, JOptionPane.INFORMATION_MESSAGE);
+                                    } else {
+                                        JOptionPane.showMessageDialog(null, chosenUser +
+                                                " is not in your friends list!", TITLE, JOptionPane.INFORMATION_MESSAGE);
+                                    }
+                                } catch (IOException ex) {
+                                    ex.printStackTrace();
                                 }
-                            } catch (IOException ex) {
-                                ex.printStackTrace();
                             }
-                        }
-                        case 2 -> {
-                            out.write("10:" + userOne + ":" + chosenUser + ":-");
-                            out.println();
-                            out.flush();
-                            try {
-                                String response = in.readLine();
-                                if (!response.equals("ERROR")) {
-                                    JOptionPane.showMessageDialog(null, chosenUser + " blocked!",
-                                            TITLE, JOptionPane.INFORMATION_MESSAGE);
-                                } else {
-                                    JOptionPane.showMessageDialog(null, chosenUser +
-                                            " is already blocked!", TITLE, JOptionPane.INFORMATION_MESSAGE);
+                            case 2 -> {
+                                out.write("10:" + userOne + ":" + chosenUser + ":-");
+                                out.println();
+                                out.flush();
+                                try {
+                                    String response = in.readLine();
+                                    if (!response.equals("ERROR")) {
+                                        JOptionPane.showMessageDialog(null, chosenUser + " blocked!",
+                                                TITLE, JOptionPane.INFORMATION_MESSAGE);
+                                    } else {
+                                        JOptionPane.showMessageDialog(null, chosenUser +
+                                                " is already blocked!", TITLE, JOptionPane.INFORMATION_MESSAGE);
+                                    }
+                                } catch (IOException ex) {
+                                    ex.printStackTrace();
                                 }
-                            } catch (IOException ex) {
-                                ex.printStackTrace();
                             }
                         }
                     }
@@ -222,15 +238,44 @@ public class GUIClient extends JComponent implements Runnable, GUIClientInterfac
         int reply;
         do {
             reply = JOptionPane.NO_OPTION;
-            String username = JOptionPane.showInputDialog(null, "Please enter your username", TITLE,
-                    JOptionPane.QUESTION_MESSAGE);
-            String password = JOptionPane.showInputDialog(null, "Please enter your password", TITLE,
-                    JOptionPane.INFORMATION_MESSAGE);
+            String username = "";
+            String password;
+            int newUser = JOptionPane.showConfirmDialog(null, "Do you have an account?", TITLE,
+                    JOptionPane.YES_NO_CANCEL_OPTION);
+            if (newUser == JOptionPane.YES_OPTION) {
+                username = JOptionPane.showInputDialog(null, "Please enter your username", TITLE,
+                        JOptionPane.QUESTION_MESSAGE);
+                password = JOptionPane.showInputDialog(null, "Please enter your password", TITLE,
+                        JOptionPane.INFORMATION_MESSAGE);
+                out.write("12:" + username + ":" + password + ":-");
+                out.println();
+                out.flush();
+            } else if (newUser == JOptionPane.NO_OPTION) {
+                username = JOptionPane.showInputDialog(null, "Please enter your username", TITLE,
+                        JOptionPane.QUESTION_MESSAGE);
+                password = JOptionPane.showInputDialog(null, "Please enter your password", TITLE,
+                        JOptionPane.QUESTION_MESSAGE);
+                out.write("6:" + username + ":" + password + ":-");
+                out.println();
+                out.flush();
 
+                try {
+                    String creationResponse = in.readLine();
+                    if (creationResponse.equals("User created")) {
+                        JOptionPane.showMessageDialog(null, "User created!", TITLE,
+                                JOptionPane.INFORMATION_MESSAGE);
+                    } else {
+                        JOptionPane.showMessageDialog(null, creationResponse, TITLE,
+                                JOptionPane.ERROR_MESSAGE);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
-            out.write(username + ":" + password);
-            out.println();
-            out.flush();
+                out.write("12:" + username + ":" + password + ":-");
+                out.println();
+                out.flush();
+            }
 
             String response = "";
             try {
@@ -259,7 +304,10 @@ public class GUIClient extends JComponent implements Runnable, GUIClientInterfac
                             users[0]);
 
                     if (userTwo != null) {
-                        createGUI(userOne, userTwo);
+                        loadMessages();
+                        SwingUtilities.invokeLater(() -> {
+                            createGUI(userOne, userTwo);
+                        });
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -278,31 +326,20 @@ public class GUIClient extends JComponent implements Runnable, GUIClientInterfac
         content.setLayout(new BorderLayout());
 
         messages = new ArrayList<>();
-        String loadedMessages = "";
-        out.write("11:" + userOne + ":" + userTwo + ":-");
-        out.println();
-        out.flush();
-
-        try {
-            loadedMessages = in.readLine();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (messagesArr.length != 0) {
+            for (int i = 0; i < messagesArr.length; i++) {
+                messages.add(new JLabel(messagesArr[i]));
+            }
         }
 
-        String[] messagesArr = loadedMessages.split(" {5}");
-
-        for (int i = 0; i < messagesArr.length; i++) {
-            messages.set(i, new JLabel(messagesArr[i]));
-        }
-
-        textField = new JTextField();
+        textField = new JTextField(30);
         textField.addActionListener(actionListener);
 
         //Set up the button to send messages
         enterBtn = new JButton("Send");
         enterBtn.addActionListener(actionListener);
 
-        searchField = new JTextField();
+        searchField = new JTextField(20);
         searchField.addActionListener(actionListener);
 
         // Set up the button for search functionality
@@ -323,6 +360,7 @@ public class GUIClient extends JComponent implements Runnable, GUIClientInterfac
         topPanel.add(searchBtn);
         topPanel.add(allUsers);
         topPanel.add(friendsOnly);
+        topPanel.add(userOptions);
 
         content.add(topPanel, BorderLayout.NORTH);
 
@@ -332,7 +370,7 @@ public class GUIClient extends JComponent implements Runnable, GUIClientInterfac
 
         content.add(bottomPanel, BorderLayout.SOUTH);
 
-        JPanel messagePanel = new JPanel();
+        messagePanel = new JPanel();
         messagePanel.setLayout(new BoxLayout(messagePanel, BoxLayout.Y_AXIS));
 
         centerPane = new JScrollPane(messagePanel);
@@ -348,6 +386,13 @@ public class GUIClient extends JComponent implements Runnable, GUIClientInterfac
 
         }
 
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                shutdown();
+            }
+        });
+
         //GUI frame remains minimal since chat selection is handled through JOptionPane
         frame.setSize(600, 400);
         frame.setLocationRelativeTo(null);
@@ -359,7 +404,45 @@ public class GUIClient extends JComponent implements Runnable, GUIClientInterfac
         out.write("11:" + userOne + ":" + userTwo + ":-");
         out.println();
         out.flush();
+
+        try {
+            String loadedMessages = in.readLine();
+            String[] messagesArr = loadedMessages.split(" {5}");
+
+            // Clear the panel and messages list
+            messages.clear();
+            messagePanel.removeAll();
+
+            // Add updated messages to the GUI
+            for (String msg : messagesArr) {
+                if (!msg.trim().isEmpty()) { // Skip empty messages
+                    JLabel newMessageLabel = new JLabel(msg);
+                    messages.add(newMessageLabel);
+                    messagePanel.add(newMessageLabel);
+                    addRightClickMenu(newMessageLabel, messagePanel, messages, userOne, out, in);
+                }
+            }
+
+            // Refresh the GUI
+            messagePanel.revalidate();
+            messagePanel.repaint();
+
+            SwingUtilities.invokeLater(() -> {
+                JScrollBar verticalBar = centerPane.getVerticalScrollBar();
+                verticalBar.setValue(verticalBar.getMaximum());
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void loadMessages() {
+        messages = new ArrayList<>();
         String loadedMessages = "";
+        out.write("11:" + userOne + ":" + userTwo + ":-");
+        out.println();
+        out.flush();
 
         try {
             loadedMessages = in.readLine();
@@ -367,13 +450,10 @@ public class GUIClient extends JComponent implements Runnable, GUIClientInterfac
             e.printStackTrace();
         }
 
-        String[] messagesArr = loadedMessages.split(" {5}");
-
-        for (int i = 0; i < messagesArr.length; i++) {
-            JLabel curr = messages.get(i);
-            curr.setText(messagesArr[i]);
-            messages.set(i, curr);
-            messages.get(i).repaint();
+        if (!loadedMessages.isEmpty()) {
+            messagesArr = loadedMessages.split(" {5}");
+        } else {
+            messagesArr = new String[0];
         }
     }
 
@@ -384,7 +464,6 @@ public class GUIClient extends JComponent implements Runnable, GUIClientInterfac
         popupMenu.add(deleteItem);
 
         deleteItem.addActionListener(e -> {
-
             out.write("3:" + user + ":NONE:" + label.getText());
             out.println();
             out.flush();
@@ -395,31 +474,26 @@ public class GUIClient extends JComponent implements Runnable, GUIClientInterfac
                             JOptionPane.INFORMATION_MESSAGE);
                     parentPanel.remove(label);
                     messages.remove(label);
+                    parentPanel.revalidate();
+                    parentPanel.repaint();
                 } else {
-                    JOptionPane.showMessageDialog(null, "Something went wrong", TITLE,
-                            JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Failed to delete message.", TITLE,
+                            JOptionPane.ERROR_MESSAGE);
                 }
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-
-            parentPanel.revalidate();
-            parentPanel.repaint();
         });
 
         label.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
-                if (e.isPopupTrigger()) {
-                    showPopup(e);
-                }
+            public void mousePressed(MouseEvent e) {
+                if (e.isPopupTrigger()) showPopup(e);
             }
 
             @Override
             public void mouseReleased(MouseEvent e) {
-                if (e.isPopupTrigger()) {
-                    showPopup(e);
-                }
+                if (e.isPopupTrigger()) showPopup(e);
             }
 
             private void showPopup(MouseEvent e) {
@@ -428,7 +502,19 @@ public class GUIClient extends JComponent implements Runnable, GUIClientInterfac
         });
     }
 
+    private void shutdown() {
+        try {
+            running = false;
+            if (in != null) in.close();
+            if (out != null) out.close();
+            if (socket != null) socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(GUIClient::new);
+        GUIClient client = new GUIClient();
+        client.run();
     }
 }

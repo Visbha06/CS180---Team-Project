@@ -16,7 +16,7 @@ public class UserDatabase extends Thread implements UserDatabaseInterface {
     private ArrayList<String> newUserData;
     private final static Object gateKeeper = new Object();
     private String filePath;
-// consturcts the UserDatabse Object
+// constructs the UserDatabase Object
     public UserDatabase(String filePath) {
 //        this.username = username;
 //        this.password = password;
@@ -91,7 +91,7 @@ public class UserDatabase extends Thread implements UserDatabaseInterface {
             if (alreadyExists)
                 throw new UserAlreadyExistsException("This username already exists.");
 
-            newUserData.add(newUser.toString());
+            newUserData.add(newUser + ",[],[]");
 
             this.writeToDatabase();
             this.readDatabase();
@@ -112,6 +112,8 @@ public class UserDatabase extends Thread implements UserDatabaseInterface {
     }
 //finds a user and returns their username and password
     public String findUserAndPassword(String username) {
+        userData = new ArrayList<>();
+        readDatabase();
         synchronized (gateKeeper) {
             for (String user : userData) {
                 String[] piece = user.split(",");

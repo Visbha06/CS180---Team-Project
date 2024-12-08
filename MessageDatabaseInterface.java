@@ -12,7 +12,7 @@ public interface MessageDatabaseInterface {
 
     boolean readDatabase();
     boolean writeToDatabase();
-    ArrayList<String> findMessages(String username);
+    ArrayList<String> findMessages(String username, String message);
     boolean deleteMessage(Chat chat, String username, String message);
     ArrayList<String> messageAllUsers(String username);
     ArrayList<String> messageOnlyFriends(String username);

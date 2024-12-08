@@ -53,7 +53,7 @@ public class MessagesDatabaseTest implements MessagesDatabaseTestInterface {
     @Test(timeout = 1000)
     public void findMessagesTest() {
         boolean readResult = md.readDatabase();
-        var foundMessages = md.findMessages("John45");
+        var foundMessages = md.findMessages("John45", "");
 
         StringBuilder output = new StringBuilder();
         for (var foundMessage : foundMessages) {

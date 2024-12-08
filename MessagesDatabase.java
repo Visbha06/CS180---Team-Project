@@ -64,16 +64,16 @@ public class MessagesDatabase extends Thread implements MessageDatabaseInterface
         return true;
     }
 //finds all messages from a user
-    public ArrayList<String> findMessages(String username) {
+    public ArrayList<String> findMessages(String username, String message) {
         synchronized (gateKeeper) {
             //stores all the messages by a certain username arrayList
             ArrayList<String> foundMessages = new ArrayList<>();
 
             //goes through the userData list and finds messages with the username String
             for (int i = 0; i < userData.size(); i++) {
-                if (userData.get(i).contains(username)) {
-                    String message = userData.get(i).split(":", 2)[1];
-                    foundMessages.add(message);
+                if (userData.get(i).contains(username) && userData.get(i).contains(message)) {
+                    String foundMessage = userData.get(i).split(":", 2)[1];
+                    foundMessages.add(foundMessage);
                 }
             }
             return foundMessages;
@@ -134,19 +134,21 @@ public class MessagesDatabase extends Thread implements MessageDatabaseInterface
     //a new arrayList that has the messages from all users excluding their own
     public ArrayList<String> messageAllUsers(String username) {
         synchronized (gateKeeper) {
-            ArrayList<String> userDataCopy = userData;
-            ArrayList<String> allUserMessages = new ArrayList<>();
+            ArrayList<String> userDataCopy = userDatabase.getUserData();
+            ArrayList<String> allUsers = new ArrayList<>();
 
             for (int i = 0; i < userDataCopy.size(); ) {
-                if (userDataCopy.get(i).contains(username)) {
+                String user = userDataCopy.get(i).split(",")[0];
+                userDataCopy.set(i, user);
+                if (user.contains(username)) {
                     userDataCopy.remove(i);
                 } else {
                     i++;
                 }
             }
 
-            allUserMessages.addAll(userDataCopy); //sets allUserMessages to the modified userData
-            return allUserMessages;
+            allUsers.addAll(userDataCopy); //sets allUsers to the modified userData
+            return allUsers;
         }
     }
 //find messages from friends only
