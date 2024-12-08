@@ -127,7 +127,6 @@ public class Server extends Thread implements ServerInterface {
                                 } else {
                                     out.write("ERROR");
                                 }
-                                Server.messagesDatabase.readDatabase();
                                 out.println();
                                 out.flush();
                                 break;
@@ -242,9 +241,11 @@ public class Server extends Thread implements ServerInterface {
                                         }
                                     }
                                     out.write(returnData.toString());
-                                    out.println();
-                                    out.flush();
+                                } else {
+                                    out.write("LOGIN ERROR");
                                 }
+                                out.println();
+                                out.flush();
                                 break;
                         }
 

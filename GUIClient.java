@@ -381,7 +381,7 @@ public class GUIClient extends JComponent implements Runnable, GUIClientInterfac
             JLabel curr = messages.get(i);
             messagePanel.add(curr);
 
-            addRightClickMenu(curr, messagePanel, messages, userOne, out, in);
+            addRightClickMenu(curr, messagePanel, messages, userOne, userTwo, out, in);
 
         }
 
@@ -418,7 +418,7 @@ public class GUIClient extends JComponent implements Runnable, GUIClientInterfac
                     JLabel newMessageLabel = new JLabel(msg);
                     messages.add(newMessageLabel);
                     messagePanel.add(newMessageLabel);
-                    addRightClickMenu(newMessageLabel, messagePanel, messages, userOne, out, in);
+                    addRightClickMenu(newMessageLabel, messagePanel, messages, userOne, userTwo, out, in);
                 }
             }
 
@@ -456,14 +456,15 @@ public class GUIClient extends JComponent implements Runnable, GUIClientInterfac
         }
     }
 
-    private static void addRightClickMenu(JLabel label, JPanel parentPanel, ArrayList<JLabel> messages, String user,
-                                          PrintWriter out, BufferedReader in) {
+    private static void addRightClickMenu(JLabel label, JPanel parentPanel, ArrayList<JLabel> messages, String userOne,
+                                          String userTwo, PrintWriter out, BufferedReader in) {
         JPopupMenu popupMenu = new JPopupMenu();
         JMenuItem deleteItem = new JMenuItem("Delete");
         popupMenu.add(deleteItem);
 
         deleteItem.addActionListener(e -> {
-            out.write("3:" + user + ":NONE:" + label.getText());
+            out.write("3:" + userOne + ":" + userTwo + ":" + label.getText()
+                    .substring(label.getText().indexOf(':') + 1));
             out.println();
             out.flush();
             try {

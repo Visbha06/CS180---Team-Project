@@ -9,7 +9,11 @@
 public interface UserInterface {
 
     String toString();
+
     String getUsername();
+
     String getPassword();
+
+    boolean equals(Object o);
 
 }

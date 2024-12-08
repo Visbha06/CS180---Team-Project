@@ -109,8 +109,8 @@ public class MessagesDatabase extends Thread implements MessageDatabaseInterface
             for (int i = 0; i < userData.size(); i++) {
                 String chatString = userData.get(i).split(":")[0];
                 int semicolonIndex = chatString.indexOf(";");
-                String usernameOne = chatString.substring(semicolonIndex - 1, semicolonIndex);
-                String usernameTwo = chatString.substring(semicolonIndex + 1, semicolonIndex + 2);
+                String usernameOne = chatString.substring(1, semicolonIndex);
+                String usernameTwo = chatString.substring(semicolonIndex + 1, chatString.length() - 1);
 
                 String dataUserOne = userDatabase.findUserAndPassword(usernameOne);
                 String dataUserTwo = userDatabase.findUserAndPassword(usernameTwo);
@@ -123,8 +123,10 @@ public class MessagesDatabase extends Thread implements MessageDatabaseInterface
 
                 Chat compareChat = new Chat(userOne, userTwo);
 
-                if (chat.equals(compareChat) && userData.get(i).contains(username) &&
-                        userData.get(i).contains(message)) {
+                String user = userData.get(i).split(":")[1];
+                String msg = userData.get(i).split(":")[2];
+
+                if (chat.equals(compareChat) && user.equals(username) && msg.equals(message)) {
                     userData.remove(i);
                     break;
                 }
