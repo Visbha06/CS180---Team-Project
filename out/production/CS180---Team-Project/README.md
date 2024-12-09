@@ -118,7 +118,12 @@ The action test interface outlines the test cases for the actionTest class.
 The action class is a enum that is used for handling user input and processing user input with the given value. It's utilized in the server class for when the user is selecting what action they would like to perform.
 ## Phase 3
 ### 1. How to compile and run
-
+##### -First compile the server using: javac Server.java
+##### -Secondly run the server using: java Server
+##### -Thirdly compile the client using: javac Client.java
+##### -Fourthly run the client using: java Client
+##### -Make sure to start running the server before the client
+##### - The GUI will start and make sure to create a username and password
 ### 2. Who submitted what 
 ##### Rylee:
 GUI Client Interface, Presentation, Project Report Part 1, GUI Client, Project Report Part 2
@@ -127,13 +132,10 @@ ReadMe, Presentation, Project Report Part 1, GUI Client, Project Report Part 2
 ##### Sathvik:
 GUI Client, Project Report Part 2
 ##### Vishal:
-GUI Client, Project Report Part 2
+GUI Client, Project Report Part 2 |
+Submitted: Presentation, Report, and Code.
 ### 3. Class Descriptions
 #### GUI Client-
 The GUI Client class is responsible for the interface that the client will be using. The GUI client starts with a JOptionPane to handle logging in and account creation if necessary. If successful then the rest of the GUI boots up and the user can interact with the various features. When the user selects an action a command is sent to the server which then sends the appropriate response and the GUI updates accordingly. We made sure to test all aspects of the GUI and also that they interact with each-other accordingly.  
 #### GUI client Interface 
 The GUI Client interface contains an outline for the GUI client's run method.
-## Phase 3
-### 1. How to compile and run
-### 2. Who submitted what 
-### Class Descriptions

@@ -137,5 +137,5 @@ Submitted: Presentation, Report, and Code.
 ### 3. Class Descriptions
 #### GUI Client-
 The GUI Client class is responsible for the interface that the client will be using. The GUI client starts with a JOptionPane to handle logging in and account creation if necessary. If successful then the rest of the GUI boots up and the user can interact with the various features. When the user selects an action a command is sent to the server which then sends the appropriate response and the GUI updates accordingly. We made sure to test all aspects of the GUI and also that they interact with each-other accordingly.  
-#### GUI client Interface 
+#### GUI Client Interface 
 The GUI Client interface contains an outline for the GUI client's run method.
