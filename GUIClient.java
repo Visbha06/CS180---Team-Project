@@ -38,6 +38,7 @@ public class GUIClient extends JComponent implements Runnable, GUIClientInterfac
     private ArrayList<JLabel> messages;
     private String[] messagesArr;
 
+    // Constructor initializes the connection to the server and sets up input/output streams.
     public GUIClient() {
         try {
             socket = new Socket(SERVER_ADDRESS, PORT);
@@ -172,7 +173,7 @@ public class GUIClient extends JComponent implements Runnable, GUIClientInterfac
                         );
 
                         switch (choice) {
-                            case 0 -> {
+                            case 0 -> { // Add as a friend
                                 out.write("8:" + userOne + ":" + chosenUser + ":-");
                                 out.println();
                                 out.flush();
@@ -189,7 +190,7 @@ public class GUIClient extends JComponent implements Runnable, GUIClientInterfac
                                     ex.printStackTrace();
                                 }
                             }
-                            case 1 -> {
+                            case 1 -> { // Remove a friend
                                 out.write("9:" + userOne + ":" + chosenUser + ":-");
                                 out.println();
                                 out.flush();
@@ -206,7 +207,7 @@ public class GUIClient extends JComponent implements Runnable, GUIClientInterfac
                                     ex.printStackTrace();
                                 }
                             }
-                            case 2 -> {
+                            case 2 -> { // Block somebody
                                 out.write("10:" + userOne + ":" + chosenUser + ":-");
                                 out.println();
                                 out.flush();
@@ -232,6 +233,7 @@ public class GUIClient extends JComponent implements Runnable, GUIClientInterfac
         }
     };
 
+    // Handles the login process and initial user setup. Repeatedly prompts the user for credentials if login fails.
     @Override
     public void run() {
         int reply;
@@ -319,6 +321,7 @@ public class GUIClient extends JComponent implements Runnable, GUIClientInterfac
         } while (reply == JOptionPane.YES_OPTION);
     }
 
+    // Sets up the main chat GUI, including text input fields, buttons, and panels for displaying messages.
     private void createGUI(String userOne, String userTwo) {
         JFrame frame = new JFrame(TITLE);
         Container content = frame.getContentPane();
@@ -354,7 +357,7 @@ public class GUIClient extends JComponent implements Runnable, GUIClientInterfac
         userOptions = new JButton("User Options");
         userOptions.addActionListener(actionListener);
 
-        JPanel topPanel = new JPanel();
+        JPanel topPanel = new JPanel(); // Contains the search field and user-related buttons.
         topPanel.add(searchField);
         topPanel.add(searchBtn);
         topPanel.add(allUsers);
@@ -363,7 +366,7 @@ public class GUIClient extends JComponent implements Runnable, GUIClientInterfac
 
         content.add(topPanel, BorderLayout.NORTH);
 
-        JPanel bottomPanel = new JPanel();
+        JPanel bottomPanel = new JPanel(); // Contains the text input field and send button.
         bottomPanel.add(textField);
         bottomPanel.add(enterBtn);
 
@@ -399,6 +402,8 @@ public class GUIClient extends JComponent implements Runnable, GUIClientInterfac
         frame.setVisible(true);
     }
 
+    // Updates the chat display by retrieving new messages from the server,
+    // clearing the current display, and populating it with updated data.
     private void updateGUI(String userOne, String userTwo) {
         out.write("11:" + userOne + ":" + userTwo + ":-");
         out.println();
@@ -436,6 +441,7 @@ public class GUIClient extends JComponent implements Runnable, GUIClientInterfac
 
     }
 
+    // It loads uup previous messages
     private void loadMessages() {
         messages = new ArrayList<>();
         String loadedMessages = "";
@@ -456,6 +462,7 @@ public class GUIClient extends JComponent implements Runnable, GUIClientInterfac
         }
     }
 
+    // Adds a right-click menu to a message label, allowing the user to delete a specific message from the chat.
     private static void addRightClickMenu(JLabel label, JPanel parentPanel, ArrayList<JLabel> messages, String userOne,
                                           String userTwo, PrintWriter out, BufferedReader in) {
         JPopupMenu popupMenu = new JPopupMenu();
@@ -502,6 +509,7 @@ public class GUIClient extends JComponent implements Runnable, GUIClientInterfac
         });
     }
 
+    // Closes input/output streams and the socket connection when the client application is closed.
     private void shutdown() {
         try {
             if (in != null) in.close();
@@ -512,6 +520,7 @@ public class GUIClient extends JComponent implements Runnable, GUIClientInterfac
         }
     }
 
+    // Entry point for the application. Creates a new GUIClient instance and starts the login and GUI setup process.
     public static void main(String[] args) {
         GUIClient client = new GUIClient();
         client.run();
